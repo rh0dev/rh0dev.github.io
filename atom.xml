@@ -4,7 +4,7 @@
   <title><![CDATA[𝟈]]></title>
   <link href="https://rh0dev.github.io//atom.xml" rel="self"/>
   <link href="https://rh0dev.github.io//"/>
-  <updated>2015-01-30T06:09:42+01:00</updated>
+  <updated>2015-01-30T06:27:42+01:00</updated>
   <id>https://rh0dev.github.io//</id>
   <author>
     <name><![CDATA[Rh0]]></name>
@@ -361,7 +361,7 @@ runtime the ROP chain will allocate executable memory, copy the shellcode to it
 and will jump to it. The chain solely uses gadgets from the VideoPlayer.ocx
 module.</li>
 <li>Afterwards we overwrite a field of the ActiveX object with the address of the
-ROP chain to be able to get control of <strong>EIP</strong> (<a href="https://github.com/rh0dev/expdev/blob/master/x360playerActiveXDataBof/x360_VideoPlayerActiveX_DataBof_full-DEP_ASLR_Bypass.html#L250" target="_blank">#250 - #252</a>)</li>
+ROP chain to be able to get control of <strong>EIP</strong> (<a href="https://github.com/rh0dev/expdev/blob/master/x360playerActiveXDataBof/x360_VideoPlayerActiveX_DataBof_full-DEP_ASLR_Bypass.html#L252" target="_blank">#252/#253</a>)</li>
 <li>To transfer program flow to the ROP chain, we call the ActiveX plugin&rsquo;s
 <strong>Play</strong> method inside JavaScript (<a href="https://github.com/rh0dev/expdev/blob/master/x360playerActiveXDataBof/x360_VideoPlayerActiveX_DataBof_full-DEP_ASLR_Bypass.html#L256" target="_blank">#256</a>). This executes <strong>call [EAX + 0x30]</strong> with
 <strong>EAX</strong> pointing to the ovewritten field containing the address of our ROP chain.</li>
