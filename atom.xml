@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[𝟈]]></title>
-  <link href="http://tocome.com/atom.xml" rel="self"/>
-  <link href="http://tocome.com/"/>
-  <updated>2015-01-30T06:00:08+01:00</updated>
-  <id>http://tocome.com/</id>
+  <link href="https://rh0dev.github.io//atom.xml" rel="self"/>
+  <link href="https://rh0dev.github.io//"/>
+  <updated>2015-01-30T06:09:42+01:00</updated>
+  <id>https://rh0dev.github.io//</id>
   <author>
     <name><![CDATA[Rh0]]></name>
     
@@ -16,10 +16,10 @@
   <entry>
     
     <title type="html"><![CDATA[Fun With Info-Leaks]]></title>
-    <link href="http://tocome.com/blog/2015/fun-with-info-leaks/"/>
+    <link href="https://rh0dev.github.io//blog/2015/fun-with-info-leaks/"/>
     
     <updated>2015-01-30T20:16:31+01:00</updated>
-    <id>http://tocome.com/blog/2015/fun-with-info-leaks</id>
+    <id>https://rh0dev.github.io//blog/2015/fun-with-info-leaks</id>
     
     <content type="html"><![CDATA[<p>This article is about information leaks in form of memory disclosures created in
 Internet Explorer 10 32-bit on Windows 7 64-bit. They are used to bypass full ASLR/DEP to
@@ -54,7 +54,7 @@ the data section of the VideoPlayer.ocx module when using the plugin&rsquo;s exp
 code at <strong>.text:1000298A</strong> and <strong>.text:10002991</strong> copies our string to a variable
 in the data section at <strong>.data:100916A8</strong> without bound checks:</p>
 
-<p><img class="center" src="http://tocome.com/images/FWL0.png" title="vulnerable code shown in IDA" ></p>
+<p><img class="center" src="https://rh0dev.github.io//images/FWL0.png" title="vulnerable code shown in IDA" ></p>
 
 <!-- more -->
 
@@ -87,7 +87,7 @@ exposed <strong>SetFontName</strong> method is dispatched.</p>
 calls <strong>sub_10058BAA</strong> with the length as 1st argument:</p>
 
 <p><a name=sub_10058DAB></a>
-<img class="center" src="http://tocome.com/images/FWL1.png" title="Function called from SetFontName" ></p>
+<img class="center" src="https://rh0dev.github.io//images/FWL1.png" title="Function called from SetFontName" ></p>
 
 <p><br></p>
 
@@ -99,7 +99,7 @@ calls <strong>sub_10058BAA</strong> with the length as 1st argument:</p>
   most likely holds an object&rsquo;s <a href="http://msdn.microsoft.com/en-us/library/ek8tkfbw.aspx" target="_blank"><em>this</em> pointer</a>:</p>
 
 <p><a name=sub_10058BAA></a>
-<img class="center" src="http://tocome.com/images/FWL2.png" title="Getting controlled content" ></p>
+<img class="center" src="https://rh0dev.github.io//images/FWL2.png" title="Getting controlled content" ></p>
 
 <p> In <strong>sub_1000F775</strong> the object pointer is moved into <strong>ESI</strong> (<strong>.text:1000F784</strong>).
   The object&rsquo;s 4th DWORD <strong>[ESI+0xC]</strong> (which we control) is compared to 0, and when it is
@@ -107,7 +107,7 @@ calls <strong>sub_10058BAA</strong> with the length as 1st argument:</p>
   moved to <strong>EAX</strong> and the function returns. So we now control the return value
   passed in <strong>EAX</strong>:</p>
 
-<p><img class="center" src="http://tocome.com/images/FWL3.png" title="Control of EAX" ></p>
+<p><img class="center" src="https://rh0dev.github.io//images/FWL3.png" title="Control of EAX" ></p>
 
 <p>We return into <strong>sub_10058BAA</strong> from <strong>sub_10058DAB</strong> and we control <strong>EAX</strong>. Thus, we can already
 control <em>WHERE</em> we want to write, but not really <em>WHAT</em> we want to write.
@@ -115,7 +115,7 @@ Our controlled value is used as pointer and the values 0x40, 0x1, 0x0 and the
 string length are written. Also, the controlled value is increased by
 0xC and then written to memory pointed to by <strong>EBX</strong>:</p>
 
-<p><img class="center" src="http://tocome.com/images/FWL4.png" title="Controlled where-write" ></p>
+<p><img class="center" src="https://rh0dev.github.io//images/FWL4.png" title="Controlled where-write" ></p>
 
 <p>This might be already enough to overwrite the
 <a href="http://www.vupen.com/blog/20120710.Advanced_Exploitation_of_Internet_Explorer_HeapOv_CVE-2012-1876.php"
@@ -137,7 +137,7 @@ return into <a href="#sub_10058DAB"><strong>sub_10058DAB</strong></a> from <stro
 pointer in <strong>EBX</strong> as 2nd, and our controlled value in <strong>[ESI]</strong> as 1st argument before
 <strong>_memcpy</strong> is called:</p>
 
-<p><img class="center" src="http://tocome.com/images/FWL5.png" title="Abuse memcpy" ></p>
+<p><img class="center" src="https://rh0dev.github.io//images/FWL5.png" title="Abuse memcpy" ></p>
 
 <p>We can use the following to abuse the call to <strong>_memcpy</strong>, perform an arbitrary write and return without a
 crash into the JavaScript context. We
@@ -220,7 +220,7 @@ We can attach
 target=_blank>WinDbg</a> to our running Internet Explorer and view the modified
 memory starting from <strong>0x10101020</strong> which was previously filled with <strong>0x22222222</strong>:</p>
 
-<p><img class="center" src="http://tocome.com/images/babe.png" title="Modified memory from 0x10101020 to 0x10101031 shown in WinDbg" ></p>
+<p><img class="center" src="https://rh0dev.github.io//images/babe.png" title="Modified memory from 0x10101020 to 0x10101031 shown in WinDbg" ></p>
 
 <p><br></p>
 
@@ -247,7 +247,7 @@ has a size of 0x30 bytes, they become aligned after the generic array data to
 <strong>0xXXXXF000</strong>, <strong>0xXXXXF030</strong>, <strong>0xXXXXF060</strong> and so on:</p>
 
 <p><a name="typedheaders"></a>
-<img class="center" src="http://tocome.com/images/FWL6.png" title="Typed array headers heaplayout" ></p>
+<img class="center" src="https://rh0dev.github.io//images/FWL6.png" title="Typed array headers heaplayout" ></p>
 
 <p>There&rsquo;s an awesome plugin tool for WinDbg out there called <a
 href="https://www.corelan.be/index.php/2011/07/14/mona-py-the-manual/"
@@ -261,7 +261,7 @@ arraybuffer. We enter &nbsp;<span class="inlineCode"> !py mona do -a 0x1111f000 
 0x30 </span>&nbsp; to dump the typed array header at <strong>0x1111F000</strong>:</p>
 
 <p><a name="symtypedheaders"></a>
-<img class="center" src="http://tocome.com/images/FWL7.png" title="Typed array header shown with mona.py" ></p>
+<img class="center" src="https://rh0dev.github.io//images/FWL7.png" title="Typed array header shown with mona.py" ></p>
 
 <p><br></p>
 
@@ -283,7 +283,7 @@ do this with array element writes (<span class="inlineCode"> arr[k][i][6] = 0x7f
 <p>After the vulnerability and the subsequent manipulation has taken place, we can
 view the typed array headers in WinDbg:</p>
 
-<p><img class="center" src="http://tocome.com/images/FWL8.png" title="Manipulated typed array headers" ></p>
+<p><img class="center" src="https://rh0dev.github.io//images/FWL8.png" title="Manipulated typed array headers" ></p>
 
 <p>At that point we have a typed array usable from JavaScript like any other
 array but with the ability to get and set the complete memory!</p>
@@ -305,11 +305,11 @@ If you test it, be aware to supply a mapped address, otherwise you get a crash.<
 that address by supplying the value &nbsp;<span class="inlineCode"> 0x1111F060
 </span>&nbsp; to the prompt box:</p>
 
-<p><img class="center" src="http://tocome.com/images/FWL9.png" title="Loop and Leak" ></p>
+<p><img class="center" src="https://rh0dev.github.io//images/FWL9.png" title="Loop and Leak" ></p>
 
 <p>A message box should pop up showing the resulting content interpreted as DWORD:</p>
 
-<p><img class="center" src="http://tocome.com/images/FWL10.png" title="vtable leak" ></p>
+<p><img class="center" src="https://rh0dev.github.io//images/FWL10.png" title="vtable leak" ></p>
 
 <p>This is consistent with the WinDbg output we saw <a href="#typedheaders">before</a>.</p>
 
