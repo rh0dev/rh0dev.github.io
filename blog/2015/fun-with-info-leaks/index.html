@@ -152,7 +152,7 @@ steps.  After some experimentation with calling the <strong>SetText</strong> met
 other plugin methods subsequently, some pointers catched my attention.</p>
 
 <p>For example, the content at address <strong>.data:10092068</strong> can be controlled via our
-buffer overflow. This pointer is used in <a href="#sub_10058DAB"><strong>sub_10058BAA</strong></a> which in turn is executed when the plugin&rsquo;s
+buffer overflow. This pointer is used in <a href="#sub_10058BAA"><strong>sub_10058BAA</strong></a> which in turn is executed when the plugin&rsquo;s
 exposed <strong>SetFontName</strong> method is dispatched.</p>
 
 <p>When we call <strong>SetFontName</strong> with a string of size smaller or equal to 0x40 the following happens:</p>
