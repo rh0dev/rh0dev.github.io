@@ -349,9 +349,11 @@ Thus, we let it point to the subsequent typed array header at <strong>0x1111F030
 Additionally, we overwrite the length field of the typed array header with one of
 our &ldquo;side effect&rdquo; values (0x00000040).</p>
 
-<p>Finding the modified type array is easy: We iterate over all typed arrays and check
-for their lengths. Then we use the modifed array to change the subsequent
-typed array header: We set the length at <strong>0x1111F048</strong> to <strong>0x7fffffff</strong>
+<p>Finding the modified typed array is easy: We iterate over all typed arrays and
+check if their first elements are unequal to zero. It is successfull when we
+hit the modified array, as its first element points to a typed array vtable. Then
+we use the modifed array to change the subsequent typed array header: We set the
+length at <strong>0x1111F048</strong> to <strong>0x7fffffff</strong>
 and the arraybuffer pointer to the start of process memory, namely <em>0x0</em>. And we can
 do this with array element writes (<span class="inlineCode"> arr[k][i][6] = 0x7fffffff </span>
 &nbsp; and &nbsp;<span class="inlineCode"> arr[k][i][7] = 0x0 </span>).</p>
