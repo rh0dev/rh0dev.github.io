@@ -4,7 +4,7 @@
   <title><![CDATA[Category: advisory | &#x03C1;]]></title>
   <link href="https://rh0dev.github.io//blog/categories/advisory/atom.xml" rel="self"/>
   <link href="https://rh0dev.github.io//"/>
-  <updated>2017-07-14T01:16:45+02:00</updated>
+  <updated>2017-07-14T01:19:09+02:00</updated>
   <id>https://rh0dev.github.io//</id>
   <author>
     <name><![CDATA[Rh0]]></name>
@@ -302,7 +302,7 @@ ASM.JS JIT-Spray won&rsquo;t work unless the user enables it.</p>
 <p>Above exploits contain &ldquo;hardcoded&rdquo; payloads within constants. That makes it kind
 of cumbersome to use different shellcodes. However, we can generate ASM.JS scripts
 on the fly and invoke them during runtime. A <a
-href="CVE-2017-5375_ASM.JS_JIT-Spray/WinExec_cmd_Firefox_50.1.0_dynamic.html" target="_blank">PoC</a>
+href="https://github.com/rh0dev/expdev/blob/master/CVE-2017-5375_ASM.JS_JIT-Spray/WinExec_cmd_Firefox_50.1.0_dynamic.html" target="_blank">PoC</a>
 where payloads are exchangeable uses the following:</p>
 
 <ul>
