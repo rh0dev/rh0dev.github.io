@@ -4,7 +4,7 @@
   <title><![CDATA[&#x03C1;]]></title>
   <link href="https://rh0dev.github.io//atom.xml" rel="self"/>
   <link href="https://rh0dev.github.io//"/>
-  <updated>2017-07-14T01:03:25+02:00</updated>
+  <updated>2017-07-14T01:11:06+02:00</updated>
   <id>https://rh0dev.github.io//</id>
   <author>
     <name><![CDATA[Rh0]]></name>
@@ -22,23 +22,23 @@
     <id>https://rh0dev.github.io//blog/2017/the-return-of-the-jit</id>
     
     <content type="html"><![CDATA[<p>TL;DR: This is the story about <em>ASM.JS</em> JIT-Spray in Mozilla Firefox (x86) on Windows tracked as
-<a href="https://www.mozilla.org/en-US/security/advisories/mfsa2017-01/#CVE-2017-5375">CVE-2017-5375</a> and <a href=https://www.mozilla.org/en-US/security/advisories/mfsa2017-05/#CVE-2017-5400>CVE-2017-5400</a>. It allows to fully bypass DEP and ASLR.</p>
+<a href="https://www.mozilla.org/en-US/security/advisories/mfsa2017-01/#CVE-2017-5375" target="_blank">CVE-2017-5375</a> and <a href="https://www.mozilla.org/en-US/security/advisories/mfsa2017-05/#CVE-2017-5400" target="_blank">CVE-2017-5400</a>. It allows to fully bypass DEP and ASLR.</p>
 
 <p>I always liked the idea of JIT-Spray since the first time I saw it being used for
 <a
-href="https://dl.packetstormsecurity.net/papers/shellcode/Writing-JIT-Spray-Shellcode.pdf">Flash</a>
+href="https://dl.packetstormsecurity.net/papers/shellcode/Writing-JIT-Spray-Shellcode.pdf" target="_blank">Flash</a>
 in 2010. Just to name a few, JIT-Spray has been used to exploit bugs in <a
-href="https://www.exploit-db.com/exploits/14221">Apple Safari</a>, create <a
-href="http://zhodiac.hispahack.com/my-stuff/security/Flash_Jit_InfoLeak_Gadgets.pdf">info leak gadgets in Flash</a>, attack various <a
-href=https://www.nccgroup.trust/globalassets/resources/us/presentations/documents/attacking_clientside_jit_compilers_paper.pdf>other client software</a>,
-and has even been abusing <a href=https://sites.google.com/site/bingsunsec/WARPJIT/JIT%20Spraying%20Never%20Dies%20-%20Bypass%20CFG%20By%20Leveraging%20WARP%20Shader%20JIT%20Spraying.pdf>Microsoft&rsquo;s WARP Shader JIT Engine</a></p>
+href="https://www.exploit-db.com/exploits/14221" target="_blank">Apple Safari</a>, create <a
+href="http://zhodiac.hispahack.com/my-stuff/security/Flash_Jit_InfoLeak_Gadgets.pdf" target="_blank">info leak gadgets in Flash</a>, attack various <a
+href=https://www.nccgroup.trust/globalassets/resources/us/presentations/documents/attacking_clientside_jit_compilers_paper.pdf target="_blank">other client software</a>,
+and has even been abusing <a href=https://sites.google.com/site/bingsunsec/WARPJIT/JIT%20Spraying%20Never%20Dies%20-%20Bypass%20CFG%20By%20Leveraging%20WARP%20Shader%20JIT%20Spraying.pdf target="_blank">Microsoft&rsquo;s WARP Shader JIT Engine</a></p>
 
 <!-- more -->
 
 
 <p>@asintsov wrote in 2010:</p>
 
-<blockquote class="twitter-tweet" data-lang="en"><p lang="en" dir="ltr">No JIT-SPRAY in Flash 10.1. Pages with  code are crypted )) But idea will never die, that i show on HITB in AMS)</p>&mdash; Alyosha Sintsov (@asintsov) <a href="https://twitter.com/asintsov/status/15947640318">June 11, 2010</a></blockquote>
+<blockquote class="twitter-tweet" data-lang="en"><p lang="en" dir="ltr">No JIT-SPRAY in Flash 10.1. Pages with  code are crypted )) But idea will never die, that i show on HITB in AMS)</p>&mdash; Alyosha Sintsov (@asintsov) <a href="https://twitter.com/asintsov/status/15947640318" target="_blank">June 11, 2010</a></blockquote>
 
 
 <script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
@@ -148,7 +148,7 @@ machine code injected into memory at predictable addresses. It is sufficient to 
 Each time an ASM.JS module is requested, <span class="inlineCode">CodeSegment::create()</span> is called
 which in turn calls <span class="inlineCode">AllocateCodeSegment()</span> in
 <em>firefox-50.1.0/js/src/asmjs/WasmCode.cpp</em> line #206 (based on the source of
-<a href=https://ftp.mozilla.org/pub/firefox/releases/50.1.0/source/firefox-50.1.0.source.tar.xz>Firefox 50.1.0</a>):</p>
+<a href=https://ftp.mozilla.org/pub/firefox/releases/50.1.0/source/firefox-50.1.0.source.tar.xz target="_blank">Firefox 50.1.0</a>):</p>
 
 <figure class='code'><figcaption><span>firefox-50.1.0/js/src/asmjs/WasmCode.cpp (CodeSegment::create)</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -394,12 +394,12 @@ cmd.exe should pop up.</li>
 
 
 <p>That&rsquo;s all. The full <a
-href="https://github.com/rh0dev/expdev/blob/master/CVE-2017-5375_ASM.JS_JIT-Spray/CVE-2016-9079_Firefox_50.0.1_DEP_ASLR_Bypass.html">exploit</a>
+href="https://github.com/rh0dev/expdev/blob/master/CVE-2017-5375_ASM.JS_JIT-Spray/CVE-2016-9079_Firefox_50.0.1_DEP_ASLR_Bypass.html" target="_blank">exploit</a>
 targets Mozilla Firefox 50.1.0, and we don&rsquo;t need any information-leaks and
 code-reuse. Note that the Tor-Browser has ASM.JS disabled by default, and hence,
 ASM.JS JIT-Spray won&rsquo;t work unless the user enables it.</p>
 
-<p>I wonder if Endgames <a href=https://www.endgame.com/blog/technical-blog/another-0day-another-prevention>HA-CFI</a> catches this exploit?</p>
+<p>I wonder if Endgames <a href="https://www.endgame.com/blog/technical-blog/another-0day-another-prevention" target="_blank">HA-CFI</a> catches this exploit?</p>
 
 <p><br></p>
 
@@ -408,7 +408,7 @@ ASM.JS JIT-Spray won&rsquo;t work unless the user enables it.</p>
 <p>Above exploits contain &ldquo;hardcoded&rdquo; payloads within constants. That makes it kind
 of cumbersome to use different shellcodes. However, we can generate ASM.JS scripts
 on the fly and invoke them during runtime. A <a
-href="CVE-2017-5375_ASM.JS_JIT-Spray/WinExec_cmd_Firefox_50.1.0_dynamic.html">PoC</a>
+href="CVE-2017-5375_ASM.JS_JIT-Spray/WinExec_cmd_Firefox_50.1.0_dynamic.html" target="_blank">PoC</a>
 where payloads are exchangeable uses the following:</p>
 
 <ul>
@@ -429,8 +429,8 @@ The PoC and especially the stage0 payload were also auto-generated with the cust
 
 <h2>The Incomplete Fix</h2>
 
-<p>Mozilla fixed this issue in <a href="https://www.mozilla.org/en-US/security/advisories/mfsa2017-01/">Firefox 51</a> on Jan. 24, 2017. However, the fix can be bypassed which resulted in
-<a href="https://www.mozilla.org/en-US/security/advisories/mfsa2017-05/#CVE-2017-5400">CVE-2017-5400</a>. This will be explained in part 2.</p>
+<p>Mozilla fixed this issue in <a href="https://www.mozilla.org/en-US/security/advisories/mfsa2017-01/" target="_blank">Firefox 51</a> on Jan. 24, 2017. However, the fix can be bypassed which resulted in
+<a href="https://www.mozilla.org/en-US/security/advisories/mfsa2017-05/#CVE-2017-5400" target="_blank">CVE-2017-5400</a>. This will be explained in part 2.</p>
 ]]></content>
     
   </entry>
