@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 <url>
+<loc>https://rh0dev.github.io//blog/2017/the-return-of-the-jit/</loc>
+<lastmod>2017-07-13T17:54:28+02:00</lastmod>
+</url>
+<url>
 <loc>https://rh0dev.github.io//blog/2015/fun-with-info-leaks/</loc>
 <lastmod>2015-01-30T20:16:31+01:00</lastmod>
 </url>
@@ -18,6 +22,15 @@
 </url>
 <url>
 <loc>https://rh0dev.github.io//about/</loc>
+</url>
+<url>
+<loc>https://rh0dev.github.io//blog/categories/exploit/</loc>
+</url>
+<url>
+<loc>https://rh0dev.github.io//blog/categories/reversing/</loc>
+</url>
+<url>
+<loc>https://rh0dev.github.io//blog/categories/advisory/</loc>
 </url>
 <url>
 <loc>https://rh0dev.github.io//blog/index.html</loc>

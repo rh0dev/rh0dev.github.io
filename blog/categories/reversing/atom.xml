@@ -1,103 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
 
-<!DOCTYPE html>
-<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
-<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
-<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
-<head>
-  <meta charset="utf-8">
-  <title>Fun With Info-Leaks - &#x03C1;</title>
-  <meta name="author" content="Rh0">
-
-  
-  <meta name="description" content="This article is about information leaks in form of memory disclosures created in
-Internet Explorer 10 32-bit on Windows 7 64-bit. They are used to &hellip;">
-  
-
-  <!-- http://t.co/dKP3o1e -->
-  <meta name="HandheldFriendly" content="True">
-  <meta name="MobileOptimized" content="320">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-
-  
-  <link rel="canonical" href="https://rh0dev.github.io//blog/2015/fun-with-info-leaks">
-  <link href="/favicon.png" rel="icon">
-  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
-  <link href="/atom.xml" rel="alternate" title="&#x03C1;" type="application/atom+xml">
-  <script src="/javascripts/modernizr-2.0.js"></script>
-  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-  <script>!window.jQuery && document.write(unescape('%3Cscript src="./javascripts/lib/jquery.min.js"%3E%3C/script%3E'))</script>
-  <script src="/javascripts/octopress.js" type="text/javascript"></script>
-  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
-<link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
-<link href="//fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
-<link href='//fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
-<link href='//fonts.googleapis.com/css?family=Fjalla+One' rel='stylesheet' type='text/css'>
-
-  
-
-</head>
-
-<body   class="collapse-sidebar sidebar-footer" >
-  <header role="banner">
-	<div class="header-title"><a href="/">&#x03C1;</a></div>
-
-
-	<br><div class="header-subtitle">program analysis, reversing & exploit writing</div>
-
-</header>
-  <nav role="navigation"><ul class="subscription" data-subscription="rss">
-  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
-  
-</ul>
-  
-<form action="https://www.google.com/search" method="get">
-  <fieldset role="search">
-    <input type="hidden" name="q" value="site:rh0dev.github.io/" />
-    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
-  </fieldset>
-</form>
-  
-<ul class="main-navigation">
-  <li><a href="/">Blog</a></li>
-  <li><a href="/blog/archives">Archives</a></li>
-  <li><a href="/tools">Tools</a></li>
-  <li><a href="/about">About</a></li>
-</ul>
-
-</nav>
-  <div id="main">
-    <div id="content">
-      <div>
-<article class="hentry" role="article">
-  
-  <header>
-  
+  <title><![CDATA[Category: reversing | &#x03C1;]]></title>
+  <link href="https://rh0dev.github.io//blog/categories/reversing/atom.xml" rel="self"/>
+  <link href="https://rh0dev.github.io//"/>
+  <updated>2017-07-14T01:03:25+02:00</updated>
+  <id>https://rh0dev.github.io//</id>
+  <author>
+    <name><![CDATA[Rh0]]></name>
     
-      <h1 class="entry-title">Fun With Info-Leaks</h1>
-    
-  
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
 
   
+  <entry>
+    <title type="html"><![CDATA[Fun With Info-Leaks]]></title>
+    <link href="https://rh0dev.github.io//blog/2015/fun-with-info-leaks/"/>
+    <updated>2015-01-30T20:16:31+01:00</updated>
+    <id>https://rh0dev.github.io//blog/2015/fun-with-info-leaks</id>
+    <content type="html"><![CDATA[<p></p>
 
-
-<time datetime="2015-01-30T20:16:31+01:00" pubdate data-updated="true"></time>
-        
-      </p>
-    
-  </header>
-
-
-<div class="entry-content"><p>This article is about information leaks in form of memory disclosures created in
+<p>This article is about information leaks in form of memory disclosures created in
 Internet Explorer 10 32-bit on Windows 7 64-bit. They are used to bypass full ASLR/DEP to
 gain remote code execution. While the software containing the bug might not be
 that popular, it&rsquo;s quite nice what can be done with the bug.</p>
@@ -134,6 +57,8 @@ code at <strong>.text:1000298A</strong> and <strong>.text:10002991</strong> copi
 in the data section at <strong>.data:100916A8</strong> without bound checks:</p>
 
 <p><a href="/images/FWL0.png"><img class="center" src="/images/FWL0.png" title="vulnerable code shown in IDA" ></a></p>
+
+<p></p>
 
 <p><br></p>
 
@@ -223,9 +148,8 @@ crash into the JavaScript context. We
 first and then write <strong>0xcafebabe</strong> to
 address <strong>0x1010102C</strong> using <strong>SetText</strong> and <strong>SetFontName</strong>:</p>
 
-<p><a name=stringspray></a></p>
-
-<figure class='code'><figcaption><span>JavaScript code to perform arbitrary memory write</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<p><a name=stringspray></a>
+<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span>JavaScript code to perform arbitrary memory write</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -256,7 +180,23 @@ address <strong>0x1010102C</strong> using <strong>SetText</strong> and <strong>S
 <span class='line-number'>29</span>
 <span class='line-number'>30</span>
 <span class='line-number'>31</span>
-</pre></td><td class='code'><pre><code class='html'><span class='line'><span class="cp">&lt;!DOCTYPE HTML&gt;</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+</pre></td><td class='code'><pre><code class='html'><span class='line'><span class="ni">&amp;lt;</span>!DOCTYPE HTML&gt;<span class="nt">&lt;/p&gt;</span>
+</span><span class='line'>
 </span><span class='line'><span class="nt">&lt;script&gt;</span>
 </span><span class='line'><span class="c1">// create VideoPlayer.ocx ActiveX Object</span>
 </span><span class='line'><span class="kd">var</span> <span class="nx">obj</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">createElement</span><span class="p">(</span><span class="s2">&quot;object&quot;</span><span class="p">);</span>
@@ -287,16 +227,16 @@ address <strong>0x1010102C</strong> using <strong>SetText</strong> and <strong>S
 </span><span class='line'><span class="nx">alert</span><span class="p">(</span><span class="s2">&quot;Check after write: dc 10101000 L14&quot;</span><span class="p">)</span>
 </span><span class='line'>
 </span><span class='line'><span class="nt">&lt;/script&gt;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p><br>
-We can attach
-<a href=http://msdn.microsoft.com/en-us/windows/hardware/hh852365.aspx
-target=_blank>WinDbg</a> to our running Internet Explorer and view the modified
-memory starting from <strong>0x10101020</strong> which was previously filled with <strong>0x22222222</strong>:</p>
-
-<p><a href="/images/babe.png"><img class="center" src="/images/babe.png" title="Modified memory from 0x10101020 to 0x10101031 shown in WinDbg" ></a></p>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'><span class="nt">&lt;pre&gt;&lt;code&gt;</span>
+</span><span class='line'><span class="ni">&amp;lt;</span>br<span class="ni">&amp;gt;</span>
+</span><span class='line'>We can attach
+</span><span class='line'><span class="ni">&amp;lt;</span>a href=http://msdn.microsoft.com/en-us/windows/hardware/hh852365.aspx
+</span><span class='line'>target=_blank<span class="ni">&amp;gt;</span>WinDbg<span class="ni">&amp;lt;</span>/a<span class="ni">&amp;gt;</span> to our running Internet Explorer and view the modified
+</span><span class='line'>memory starting from **0x10101020** which was previously filled with **0x22222222**:
+</span><span class='line'>
+<a href="/images/babe.png"><img class="center" src="/images/babe.png" title="Modified memory from 0x10101020 to 0x10101031 shown in WinDbg" ></a></p>
 
 <p><br></p>
 
@@ -448,104 +388,7 @@ ROP chain to be able to get control of <strong>EIP</strong> (<a href="https://gi
 
 <p>Et voil&agrave;! We&rsquo;ve bypassed full ASLR and DEP and got remote code execution with a
 buffer overflow in the data section. Fun!</p>
-</div>
-
-
-  <footer>
-    <p class="meta">
-      
+]]></content>
+  </entry>
   
-
-<span class="byline author vcard">Posted by <span class="fn">Rh0</span></span>
-
-      
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2015-01-30T20:16:31+01:00" pubdate data-updated="true"></time>
-      
-
-<span class="categories">
-  
-    <a class='category' href='/blog/categories/exploit/'>exploit</a>, <a class='category' href='/blog/categories/reversing/'>reversing</a>
-  
-</span>
-
-
-    </p>
-    
-      <div class="sharing">
-  
-  
-  
-</div>
-
-    
-    <p class="meta">
-      
-      
-        <a class="basic-alignment right" href="/blog/2017/the-return-of-the-jit/" title="Next Post: The Return of The JIT (Part 1)">The Return of The JIT (Part 1) &raquo;</a>
-      
-    </p>
-  </footer>
-</article>
-
-</div>
-
-<aside class="sidebar">
-  
-    <section>
-  <h1>Recent Posts</h1>
-  <ul id="recent_posts">
-    
-      <li class="post">
-        <a href="/blog/2017/the-return-of-the-jit/">The Return of The JIT (Part 1)</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2015/fun-with-info-leaks/">Fun With Info-Leaks</a>
-      </li>
-    
-  </ul>
-</section>
-
-
-
-
-
-  
-</aside>
-
-
-    </div>
-  </div>
-  <footer role="contentinfo"><p>
-  Copyright &copy; 2017 -  Rh0 <br/>
-  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a> + <a href="https://github.com/ioveracker/mnml">mnml</a>.
-	  
-  </span>
-</p>
-
-</footer>
-  
-
-
-
-
-
-
-
-
-
-
-
-</body>
-</html>
+</feed>

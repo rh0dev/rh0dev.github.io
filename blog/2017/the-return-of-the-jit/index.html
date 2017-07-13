@@ -1,27 +1,103 @@
-<?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[&#x03C1;]]></title>
-  <link href="https://rh0dev.github.io//atom.xml" rel="self"/>
-  <link href="https://rh0dev.github.io//"/>
-  <updated>2017-07-14T01:03:25+02:00</updated>
-  <id>https://rh0dev.github.io//</id>
-  <author>
-    <name><![CDATA[Rh0]]></name>
-    
-  </author>
-  <generator uri="http://octopress.org/">Octopress</generator>
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>The Return of The JIT (Part 1) - &#x03C1;</title>
+  <meta name="author" content="Rh0">
 
   
-  <entry>
+  <meta name="description" content="TL;DR: This is the story about ASM.JS JIT-Spray in Mozilla Firefox (x86) on Windows tracked as
+CVE-2017-5375 and CVE-2017-5400. It allows to fully &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="https://rh0dev.github.io//blog/2017/the-return-of-the-jit">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="&#x03C1;" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="./javascripts/lib/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="//fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href='//fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+<link href='//fonts.googleapis.com/css?family=Fjalla+One' rel='stylesheet' type='text/css'>
+
+  
+
+</head>
+
+<body   class="collapse-sidebar sidebar-footer" >
+  <header role="banner">
+	<div class="header-title"><a href="/">&#x03C1;</a></div>
+
+
+	<br><div class="header-subtitle">program analysis, reversing & exploit writing</div>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="https://www.google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:rh0dev.github.io/" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+  <li><a href="/tools">Tools</a></li>
+  <li><a href="/about">About</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+  
     
-    <title type="html"><![CDATA[The Return of The JIT (Part 1)]]></title>
-    <link href="https://rh0dev.github.io//blog/2017/the-return-of-the-jit/"/>
+      <h1 class="entry-title">The Return of the JIT (Part 1)</h1>
     
-    <updated>2017-07-13T17:54:28+02:00</updated>
-    <id>https://rh0dev.github.io//blog/2017/the-return-of-the-jit</id>
+  
     
-    <content type="html"><![CDATA[<p>TL;DR: This is the story about <em>ASM.JS</em> JIT-Spray in Mozilla Firefox (x86) on Windows tracked as
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2017-07-13T17:54:28+02:00" pubdate data-updated="true"></time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>TL;DR: This is the story about <em>ASM.JS</em> JIT-Spray in Mozilla Firefox (x86) on Windows tracked as
 <a href="https://www.mozilla.org/en-US/security/advisories/mfsa2017-01/#CVE-2017-5375">CVE-2017-5375</a> and <a href=https://www.mozilla.org/en-US/security/advisories/mfsa2017-05/#CVE-2017-5400>CVE-2017-5400</a>. It allows to fully bypass DEP and ASLR.</p>
 
 <p>I always liked the idea of JIT-Spray since the first time I saw it being used for
@@ -431,371 +507,104 @@ The PoC and especially the stage0 payload were also auto-generated with the cust
 
 <p>Mozilla fixed this issue in <a href="https://www.mozilla.org/en-US/security/advisories/mfsa2017-01/">Firefox 51</a> on Jan. 24, 2017. However, the fix can be bypassed which resulted in
 <a href="https://www.mozilla.org/en-US/security/advisories/mfsa2017-05/#CVE-2017-5400">CVE-2017-5400</a>. This will be explained in part 2.</p>
-]]></content>
-    
-  </entry>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
   
-  <entry>
-    
-    <title type="html"><![CDATA[Fun With Info-Leaks]]></title>
-    <link href="https://rh0dev.github.io//blog/2015/fun-with-info-leaks/"/>
-    
-    <updated>2015-01-30T20:16:31+01:00</updated>
-    <id>https://rh0dev.github.io//blog/2015/fun-with-info-leaks</id>
-    
-    <content type="html"><![CDATA[<p>This article is about information leaks in form of memory disclosures created in
-Internet Explorer 10 32-bit on Windows 7 64-bit. They are used to bypass full ASLR/DEP to
-gain remote code execution. While the software containing the bug might not be
-that popular, it&rsquo;s quite nice what can be done with the bug.</p>
 
-<p>Reading this article requires some familiarity with
-<a href=http://msdn.microsoft.com/en-us/windows/hardware/hh852365.aspx target=_blank>WinDbg</a>,
-<a href="https://www.corelan.be/index.php/2011/12/31/exploit-writing-tutorial-part-11-heap-spraying-demystified/" target=_blank>heap</a>
-<a href="https://www.corelan.be/index.php/2013/02/19/deps-precise-heap-spray-on-firefox-and-ie10/" target="_blank">spray</a>
- , and
-<a href="https://media.blackhat.com/bh-us-12/Briefings/Serna/BH_US_12_Serna_Leak_Era_Slides.pdf" target="_blank">info-leaks</a>.</p>
+<span class="byline author vcard">Posted by <span class="fn">Rh0</span></span>
 
-<p>Hope you enjoy it.</p>
+      
 
-<!-- more -->
 
 
-<p><br></p>
 
-<h2>The Bug</h2>
 
-<p>I discovered a vulnerability in an ActiveX Control with the rather
-oldscool tool
-<a href="http://www.woodmann.com/collaborative/tools/index.php/COMRaider" target="_blank">COMRaider</a>.
-The ActiveX Control is a video plugin from
-<a href="http://www.x360soft.com/demo/videoplayersetup.exe" target="_blank">X360 Software</a>.
- Let&rsquo;s take a look with
-<a href="https://www.hex-rays.com/products/ida/support/download_freeware.shtml" target="_blank">IDA Free 5.0</a>
-into it.</p>
 
-<p>The vulnerability is a simple buffer overflow occuring in
-the data section of the VideoPlayer.ocx module when using the plugin&rsquo;s exposed
-<strong>SetText</strong> method (<strong>sub_10002930</strong>). By supplying a string to that method, the
-code at <strong>.text:1000298A</strong> and <strong>.text:10002991</strong> copies our string to a variable
-in the data section at <strong>.data:100916A8</strong> without bound checks:</p>
 
-<p><a href="https://rh0dev.github.io//images/FWL0.png"><img class="center" src="https://rh0dev.github.io//images/FWL0.png" title="vulnerable code shown in IDA" ></a></p>
 
-<p><br></p>
-
-<h2>From Data Buffer Overflow to Arbitrary Write</h2>
-
-<p>While there are no immediate
-control flow pointers like on the stack, maybe other pointers can be overwritten
-to achieve interesting things towards program manipulation and remote code
-execution. Exploitation on Windows XP may seem straightforward due to the
-absence of ASLR, but what if we want to target some Internet Explorer on Windows 7
-or 8? At the end I decided to take that route.</p>
-
-<p>To bypass ASLR, we need an
-information leak in order to disclose some interesting memory usable for further
-steps.  After some experimentation with calling the <strong>SetText</strong> method and calling
-other plugin methods subsequently, some pointers catched my attention.</p>
-
-<p>For example, the content at address <strong>.data:10092068</strong> can be controlled via our
-buffer overflow. This pointer is used in <a href="#sub_10058BAA"><strong>sub_10058BAA</strong></a> which in turn is executed when the plugin&rsquo;s
-exposed <strong>SetFontName</strong> method is dispatched.</p>
-
-<p>When we call <strong>SetFontName</strong> with a string of size smaller or equal to 0x40 the following happens:</p>
-
-<h3>1. A function goes evil</h3>
-
-<p>We hit the function <strong>sub_10058DAB</strong> which retrieves the string&rsquo;s length and
-calls <strong>sub_10058BAA</strong> with the length as 1st argument:</p>
-
-<p><a name=sub_10058DAB></a>
-<a href="https://rh0dev.github.io//images/FWL1.png"><img class="center" src="https://rh0dev.github.io//images/FWL1.png" title="Function called from SetFontName" ></a></p>
-
-<p><br></p>
-
-<h3>2. Use of controlled content</h3>
-
-<p> In function <strong>sub_10058BAA</strong> the address
-  <strong>.data:10092068</strong> of our controlled content is moved to <strong>ECX</strong> at <strong>.text:10058BC7</strong> and
-  function <strong>sub_1000F775</strong> is called. As the address is passed via <strong>ECX</strong> to the function, it
-  most likely holds an object&rsquo;s <a href="http://msdn.microsoft.com/en-us/library/ek8tkfbw.aspx" target="_blank"><em>this</em> pointer</a>:</p>
-
-<p><a name=sub_10058BAA></a>
-<a href="https://rh0dev.github.io//images/FWL2.png"><img class="center" src="https://rh0dev.github.io//images/FWL2.png" title="Getting controlled content" ></a></p>
-
-<p> In <strong>sub_1000F775</strong> the object pointer is moved into <strong>ESI</strong> (<strong>.text:1000F784</strong>).
-  The object&rsquo;s 4th DWORD <strong>[ESI+0xC]</strong> (which we control) is compared to 0, and when it is
-  not 0, program flow continues at <strong>.text:1000F7CE</strong>. Afterwards, the 4th DWORD is
-  moved to <strong>EAX</strong> and the function returns. So we now control the return value
-  passed in <strong>EAX</strong>:</p>
-
-<p><a href="https://rh0dev.github.io//images/FWL3.png"><img class="center" src="https://rh0dev.github.io//images/FWL3.png" title="Control of EAX" ></a></p>
-
-<p>We return into <strong>sub_10058BAA</strong> from <strong>sub_10058DAB</strong> and we control <strong>EAX</strong>. Thus, we can already
-control <em>WHERE</em> we want to write, but not really <em>WHAT</em> we want to write.
-Our controlled value is used as pointer and the values 0x40, 0x1, 0x0 and the
-string length are written. Also, the controlled value is increased by
-0xC and then written to memory pointed to by <strong>EBX</strong>:</p>
-
-<p><a href="https://rh0dev.github.io//images/FWL4.png"><img class="center" src="https://rh0dev.github.io//images/FWL4.png" title="Controlled where-write" ></a></p>
-
-<p>This might be already enough to overwrite the
-<a href="http://www.vupen.com/blog/20120710.Advanced_Exploitation_of_Internet_Explorer_HeapOv_CVE-2012-1876.php"
-target="_blank">length of a BSTR</a>
-JavaScript string or a
-<a
-href="https://github.com/tombkeeper/Talks/raw/master/CanSecWest_2014/ROPs_are_for_the_99%25_%5BCSW2014%5D.pdf"
-target=_blank>length field </a>of an array
-to create an Info-Leak. During runtime <strong>ESI</strong> holds the same address as
-<strong>EBX</strong>. So we also control <strong>[ESI]</strong>, and gain control over the destination
-argument of a memcpy when we
-return into <a href="#sub_10058DAB"><strong>sub_10058DAB</strong></a> from <strong>sub_10058BAA</strong>.</p>
-
-<p><br></p>
-
-<h3>3. Write-what-where</h3>
-
-<p>Back in <strong>sub_10058DAB</strong>, the string length in <strong>EDI</strong> is pushed as 3rd argument, the string
-pointer in <strong>EBX</strong> as 2nd, and our controlled value in <strong>[ESI]</strong> as 1st argument before
-<strong>_memcpy</strong> is called:</p>
-
-<p><a href="https://rh0dev.github.io//images/FWL5.png"><img class="center" src="https://rh0dev.github.io//images/FWL5.png" title="Abuse memcpy" ></a></p>
-
-<p>We can use the following to abuse the call to <strong>_memcpy</strong>, perform an arbitrary write and return without a
-crash into the JavaScript context. We
-<a href="http://www.exploit-monday.com/2011/08/targeted-heap-spraying-0x0c0c0c0c-is.html" target=_blank>spray</a>
-<a href="http://ekoparty.org/archive/2013/charlas/IE%20JS%20Strings.pptx" target=_blank>the</a>
-<a href="https://www.corelan.be/index.php/2011/12/31/exploit-writing-tutorial-part-11-heap-spraying-demystified/" target=_blank>heap</a>
-first and then write <strong>0xcafebabe</strong> to
-address <strong>0x1010102C</strong> using <strong>SetText</strong> and <strong>SetFontName</strong>:</p>
-
-<p><a name=stringspray></a></p>
-
-<figure class='code'><figcaption><span>JavaScript code to perform arbitrary memory write</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-</pre></td><td class='code'><pre><code class='html'><span class='line'><span class="cp">&lt;!DOCTYPE HTML&gt;</span>
-</span><span class='line'><span class="nt">&lt;script&gt;</span>
-</span><span class='line'><span class="c1">// create VideoPlayer.ocx ActiveX Object</span>
-</span><span class='line'><span class="kd">var</span> <span class="nx">obj</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">createElement</span><span class="p">(</span><span class="s2">&quot;object&quot;</span><span class="p">);</span>
-</span><span class='line'><span class="nx">obj</span><span class="p">.</span><span class="nx">setAttribute</span><span class="p">(</span><span class="s2">&quot;classid&quot;</span><span class="p">,</span> <span class="s2">&quot;clsid:4B3476C6-185A-4D19-BB09-718B565FA67B&quot;</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">// spray the heap with 512M to allocate memory around 0x10101020</span>
-</span><span class='line'><span class="nx">data</span> <span class="o">=</span> <span class="s2">&quot;\u2222\u2222&quot;</span> <span class="c1">// use 0x22222222 as filler</span>
-</span><span class='line'><span class="k">while</span> <span class="p">(</span><span class="nx">data</span><span class="p">.</span><span class="nx">length</span> <span class="o">&lt;</span> <span class="mh">0x80000</span><span class="p">){</span><span class="nx">data</span> <span class="o">+=</span> <span class="nx">data</span><span class="p">}</span>
-</span><span class='line'><span class="nx">div</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">createElement</span><span class="p">(</span><span class="s2">&quot;div&quot;</span><span class="p">)</span>
-</span><span class='line'><span class="k">for</span> <span class="p">(</span><span class="nx">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="nx">i</span><span class="o">&lt;=</span><span class="mh">0x400</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">){</span>
-</span><span class='line'>    <span class="nx">div</span><span class="p">.</span><span class="nx">setAttribute</span><span class="p">(</span><span class="s2">&quot;attr&quot;</span><span class="o">+</span><span class="nx">i</span><span class="p">,</span> <span class="nx">data</span><span class="p">.</span><span class="nx">substring</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="p">(</span><span class="mh">0x80000</span> <span class="o">-</span> <span class="mi">2</span> <span class="o">-</span> <span class="mi">4</span> <span class="o">-</span> <span class="mh">0x20</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">))</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'><span class="nx">alert</span><span class="p">(</span><span class="s2">&quot;Check in WinDbg before write: dc 10101000 L14&quot;</span><span class="p">)</span>
-</span><span class='line'>
-</span><span class='line'><span class="nx">addr</span> <span class="o">=</span> <span class="s2">&quot;\x20\x10\x10\x10&quot;</span>  <span class="c1">// WHERE TO WRITE (0x10101020 + 0xC)</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">// prepare buffer with address we want to write to</span>
-</span><span class='line'><span class="nx">ptrBuf</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
-</span><span class='line'><span class="c1">// fill buffer: length = relative ptr address - buffer start + ptr offset</span>
-</span><span class='line'><span class="k">while</span> <span class="p">(</span><span class="nx">ptrBuf</span><span class="p">.</span><span class="nx">length</span> <span class="o">&lt;</span> <span class="p">(</span><span class="mh">0x92068</span> <span class="o">-</span> <span class="mh">0x916a8</span> <span class="o">+</span> <span class="mh">0xC</span><span class="p">)){</span><span class="nx">ptrBuf</span> <span class="o">+=</span> <span class="s2">&quot;A&quot;</span><span class="p">}</span>
-</span><span class='line'><span class="nx">ptrBuf</span> <span class="o">+=</span> <span class="nx">addr</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">// overflow buffer and overwrite the pointer value after buffer</span>
-</span><span class='line'><span class="nx">obj</span><span class="p">.</span><span class="nx">SetText</span><span class="p">(</span><span class="nx">ptrBuf</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">// use overwritten pointer to conduct memory write of 4 bytes</span>
-</span><span class='line'><span class="nx">obj</span><span class="p">.</span><span class="nx">SetFontName</span><span class="p">(</span><span class="s2">&quot;\xbe\xba\xfe\xca&quot;</span><span class="p">)</span> <span class="c1">// WHAT TO WRITE</span>
-</span><span class='line'><span class="nx">alert</span><span class="p">(</span><span class="s2">&quot;Check after write: dc 10101000 L14&quot;</span><span class="p">)</span>
-</span><span class='line'>
-</span><span class='line'><span class="nt">&lt;/script&gt;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p><br>
-We can attach
-<a href=http://msdn.microsoft.com/en-us/windows/hardware/hh852365.aspx
-target=_blank>WinDbg</a> to our running Internet Explorer and view the modified
-memory starting from <strong>0x10101020</strong> which was previously filled with <strong>0x22222222</strong>:</p>
-
-<p><a href="https://rh0dev.github.io//images/babe.png"><img class="center" src="https://rh0dev.github.io//images/babe.png" title="Modified memory from 0x10101020 to 0x10101031 shown in WinDbg" ></a></p>
-
-<p><br></p>
-
-<h2>Prepare leaks: One array to access &lsquo;em all</h2>
-
-<p>As we can modify any memory arbitrarily (despite the &ldquo;side effect&rdquo; values and
-the appending NULL), we can use
-<a
-href="https://cansecwest.com/slides/2014/The%20Art%20of%20Leaks%20-%20read%20version%20-%20Yoyo.pdf"
-target=_blank>tech</a>-<a
- href="https://github.com/tombkeeper/Talks/blob/master/CanSecWest_2014/ROPs_are_for_the_99%25_%5BCSW2014%5D.pdf?raw=true"
-target=_blank>niques</a> to make the complete memory
-readable and writable from JavaScript.</p>
-
-<h3>(Typed) array heap spray</h3>
-
-<p>Instead of spraying the heap with <a href="#stringspray">strings</a> we use arrays. We create blocks of
-memory with a size of 0x10000 bytes which become aligned to <strong>0xXXXX0000</strong>. The
-first 0xf000 bytes are filled with a generic
-<a href="http://msdn.microsoft.com/en-us/library/ie/k4h76zbx%28v=vs.94%29.aspx" target="_blank">array</a>
-and <a href="http://msdn.microsoft.com/en-us/library/ie/br212485%28v=vs.94%29.aspx" target="_blank">typed array</a>
-headers (objects) follow which fill the remaining page. As each typed array header
-has a size of 0x30 bytes, they become aligned after the generic array data to
-<strong>0xXXXXF000</strong>, <strong>0xXXXXF030</strong>, <strong>0xXXXXF060</strong> and so on:</p>
-
-<p><a name="typedheaders"></a>
-<a href="https://rh0dev.github.io//images/FWL6.png"><img class="center" src="https://rh0dev.github.io//images/FWL6.png" title="Typed array headers heaplayout" ></a></p>
-
-<p>There&rsquo;s an awesome plugin tool for WinDbg out there called <a
-href="https://www.corelan.be/index.php/2011/07/14/mona-py-the-manual/"
-target="_blank">mona</a>.
-Recently it got the
-<a href="https://www.corelan.be/index.php/2014/08/16/analyzing-heap-objects-with-mona-py/" target="_blank">ability</a>
- to dump objects in a detailed way. We can see the different elements of
-the typed array header. Amongst other fields, each typed
-array header has a vtable pointer, a length field, a pointer to its arraybuffer object and to its
-arraybuffer. We enter &nbsp;<span class="inlineCode"> !py mona do -a 0x1111f000 -s
-0x30 </span>&nbsp; to dump the typed array header at <strong>0x1111F000</strong>:</p>
-
-<p><a name="symtypedheaders"></a>
-<a href="https://rh0dev.github.io//images/FWL7.png"><img class="center" src="https://rh0dev.github.io//images/FWL7.png" title="Typed array header shown with mona.py" ></a></p>
-
-<p><br></p>
-
-<h3>Modify typed array headers</h3>
-
-<p>We now trigger the vulnerability such that we overwrite a pointer to an
-arraybuffer with a desired value. We choose a value of <strong>0x1111F030</strong> and overwrite the pointer residing at <strong>0x1111F010</strong>.
-Thus, we let it point to the subsequent typed array header at <strong>0x1111F030</strong>.
-Additionally, we overwrite the length field of the typed array header with one of
-our &ldquo;side effect&rdquo; values (0x00000040).</p>
-
-<p>Finding the modified typed array is easy: We iterate over all typed arrays and
-check if their first elements are unequal to zero. It is successfull when we
-hit the modified array, as its first element points to a typed array vtable. Then
-we use the modifed array to change the subsequent typed array header: We set the
-length at <strong>0x1111F048</strong> to <strong>0x7fffffff</strong>
-and the arraybuffer pointer to the start of process memory, namely <em>0x0</em>. And we can
-do this with array element writes (<span class="inlineCode"> arr[k][i][6] = 0x7fffffff </span>
-&nbsp; and &nbsp;<span class="inlineCode"> arr[k][i][7] = 0x0 </span>).</p>
-
-<p>After the vulnerability and the subsequent manipulation has taken place, we can
-view the typed array headers in WinDbg:</p>
-
-<p><a href="https://rh0dev.github.io//images/FWL8.png"><img class="center" src="https://rh0dev.github.io//images/FWL8.png" title="Manipulated typed array headers" ></a></p>
-
-<p>At that point we have a typed array usable from JavaScript like any other
-array but with the ability to get and set the complete memory!</p>
-
-<p><br></p>
-
-<h2>Access arbitrary memory</h2>
-
-<p>As we have a memory readwrite interface we can use it via array accesses to read
-and write arbitrary memory.</p>
-
-<h3>Leak memory</h3>
-
-<p>So we can use JavaScript <a href="https://github.com/rh0dev/expdev/blob/master/x360playerActiveXDataBof/poc_leaks.html" target="_blank">code</a>
-which asks you for an absolute address and returns the content at that address.
-If you test it, be aware to supply a mapped address, otherwise you get a crash.</p>
-
-<p>We <a href="#typedheaders">know</a> that there&rsquo;s a vtable at <strong>0x1111F060</strong>. So let&rsquo;s read at
-that address by supplying the value &nbsp;<span class="inlineCode"> 0x1111F060
-</span>&nbsp; to the prompt box:</p>
-
-<p><a href="https://rh0dev.github.io//images/FWL9.png"><img class="center" src="https://rh0dev.github.io//images/FWL9.png" title="Loop and Leak" ></a></p>
-
-<p>A message box should pop up showing the resulting content interpreted as DWORD:</p>
-
-<p><a href="https://rh0dev.github.io//images/FWL10.png"><img class="center" src="https://rh0dev.github.io//images/FWL10.png" title="vtable leak" ></a></p>
-
-<p>This is consistent with the WinDbg output we saw <a href="#typedheaders">before</a>.</p>
-
-<p><br></p>
-
-<h3>Set and leak objects</h3>
-
-<p>As the heap layout is predictable we can set any object as element into a generic array
-and leak its address.
-For example, we can put the ActiveX object as first element into the generic array residing below the
-page with the manipulated typed array headers. As the array is aligned to
-<strong>0x11120000</strong>, we know that the object&rsquo;s pointer is located at <strong>0x11120020</strong> (20 bytes
-are occupied by allocation and array metadata). We simply supply
-&nbsp;<span class="inlineCode"> 0x11120020/4 </span>&nbsp; as
-index to our memory interface array and get the object&rsquo;s address. You can test
-it by uncommenting line #102 in the leaking <a href="https://github.com/rh0dev/expdev/blob/master/x360playerActiveXDataBof/poc_leaks.html" target="_blank">script</a>
-and supplying &nbsp;<span class="inlineCode"> 0x11120020 </span>&nbsp; to the
-prompt box. To
-verify it with WinDbg, enter &nbsp;<span class="inlineCode"> dd 0x11120020
-</span>.</p>
-
-<h3>Dig deep into objects</h3>
-
-<p>When we leak content at a specified address and know that the content is a
-pointer itself, we can use the retrieved content as an index into our memory
-interface array again. This way, we can subsequently dereference object fields
-in order to read and rewrite them.</p>
-
-<p><br>
-<a name="RCE"></a></p>
-
-<h2>Code Execution</h2>
-
-<p>Finally it&rsquo;s time to pop some calculators. So there&rsquo;s of course a <a href="https://github.com/rh0dev/expdev/blob/master/x360playerActiveXDataBof/x360_VideoPlayerActiveX_DataBof_full-DEP_ASLR_Bypass.html" target="_blank">PoC</a> which
-achieves code execution and runs calc.exe.</p>
-
-<p>Just a short description what is happening there:</p>
-
-<ul>
-<li>We first subsequently leak memory from the ActiveX plugin object and
-obtain the base of VideoPlayer.ocx without touching
-any import/export tables (line <a href="https://github.com/rh0dev/expdev/blob/master/x360playerActiveXDataBof/x360_VideoPlayerActiveX_DataBof_full-DEP_ASLR_Bypass.html#L162" target="_blank">#162 to #179</a>).</li>
-<li>The location of <strong>VirtualAlloc</strong> and <strong>_memcpy</strong> is obtained (line <a href="https://github.com/rh0dev/expdev/blob/master/x360playerActiveXDataBof/x360_VideoPlayerActiveX_DataBof_full-DEP_ASLR_Bypass.html#L181" target="_blank">#181/183</a>)</li>
-<li>We then put shellcode into an arraybuffer and leak its address dynamically
-(<a href="https://github.com/rh0dev/expdev/blob/master/x360playerActiveXDataBof/x360_VideoPlayerActiveX_DataBof_full-DEP_ASLR_Bypass.html#L210" target="_blank">#210 - #215</a>).</li>
-<li>In line <a href="https://github.com/rh0dev/expdev/blob/master/x360playerActiveXDataBof/x360_VideoPlayerActiveX_DataBof_full-DEP_ASLR_Bypass.html#L231" target="_blank">#231 to #249</a> we build a <a href="http://en.wikipedia.org/wiki/Return-oriented_programming" target="_blank">ROP</a>
-chain and fill necessary fields of it. We leak it&rsquo;s buffer address as well. At
-runtime the ROP chain will allocate executable memory, copy the shellcode to it
-and will jump to it. The chain solely uses gadgets from the VideoPlayer.ocx
-module.</li>
-<li>Afterwards we overwrite a field of the ActiveX object with the address of the
-ROP chain to be able to get control of <strong>EIP</strong> (<a href="https://github.com/rh0dev/expdev/blob/master/x360playerActiveXDataBof/x360_VideoPlayerActiveX_DataBof_full-DEP_ASLR_Bypass.html#L252" target="_blank">#252/253</a>)</li>
-<li>To transfer program flow to the ROP chain, we call the ActiveX plugin&rsquo;s
-<strong>Play</strong> method inside JavaScript (<a href="https://github.com/rh0dev/expdev/blob/master/x360playerActiveXDataBof/x360_VideoPlayerActiveX_DataBof_full-DEP_ASLR_Bypass.html#L256" target="_blank">#256</a>). This executes <strong>call [EAX + 0x30]</strong> with
-<strong>EAX</strong> pointing to the ovewritten field containing the address of our ROP chain.</li>
-</ul>
-
-
-<p>Et voil&agrave;! We&rsquo;ve bypassed full ASLR and DEP and got remote code execution with a
-buffer overflow in the data section. Fun!</p>
-]]></content>
-    
-  </entry>
   
-</feed>
+
+
+<time datetime="2017-07-13T17:54:28+02:00" pubdate data-updated="true"></time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/advisory/'>advisory</a>, <a class='category' href='/blog/categories/exploit/'>exploit</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2015/fun-with-info-leaks/" title="Previous Post: Fun With Info-Leaks">&laquo; Fun With Info-Leaks</a>
+      
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2017/the-return-of-the-jit/">The Return of The JIT (Part 1)</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/fun-with-info-leaks/">Fun With Info-Leaks</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2017 -  Rh0 <br/>
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a> + <a href="https://github.com/ioveracker/mnml">mnml</a>.
+	  
+  </span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>
