@@ -4,7 +4,7 @@
   <title><![CDATA[&#x03C1;]]></title>
   <link href="https://rh0dev.github.io//atom.xml" rel="self"/>
   <link href="https://rh0dev.github.io//"/>
-  <updated>2017-07-14T01:11:06+02:00</updated>
+  <updated>2017-07-14T01:16:45+02:00</updated>
   <id>https://rh0dev.github.io//</id>
   <author>
     <name><![CDATA[Rh0]]></name>
@@ -377,7 +377,7 @@ favorite debugger when you are prompted to ;)</p>
 href="https://www.mozilla.org/en-US/security/advisories/mfsa2016-92/" target="_blank">CVE-2016-9079</a>) and
 see how super easy exploitation becomes when using ASM.JS JIT-Spray. This
 use-after-free has been analyzed thoroughly, so most of the hard work to write a
-custom exploit was already done. We target Firefox <strong>50.0.1</strong> and <em>not</em> <strong>50.1.0</strong> as above.</p>
+custom exploit was already done. Note: We target Firefox <strong>50.0.1</strong> and <em>not</em> <strong>50.1.0</strong> as above.</p>
 
 <p>Despite JIT-Spraying executable regions, following steps are conducted:</p>
 
@@ -395,7 +395,7 @@ cmd.exe should pop up.</li>
 
 <p>That&rsquo;s all. The full <a
 href="https://github.com/rh0dev/expdev/blob/master/CVE-2017-5375_ASM.JS_JIT-Spray/CVE-2016-9079_Firefox_50.0.1_DEP_ASLR_Bypass.html" target="_blank">exploit</a>
-targets Mozilla Firefox 50.1.0, and we don&rsquo;t need any information-leaks and
+targets Mozilla Firefox 50.0.1, and we don&rsquo;t need any information-leaks and
 code-reuse. Note that the Tor-Browser has ASM.JS disabled by default, and hence,
 ASM.JS JIT-Spray won&rsquo;t work unless the user enables it.</p>
 
