@@ -384,8 +384,8 @@ we don&rsquo;t need it.</li>
 demonstrates the issue.  Again, predictable addresses contained the injected,
 JIT-sprayed code, and the only necessity to exploit a memory corruption bug is
 to set EIP to that address (i.e., <strong>0x55550055</strong>). Although there&rsquo;s room
-for improvement (e.g., being able to chose a very specific address), the mixture of Heap
-and JIT-Spray was be used to bypass DEP and ASLR, once again. This resulted in <a
+for improvement (e.g., being able to choose a very specific address), the mixture of Heap
+and JIT-Spray was used to bypass DEP and ASLR, once again. This resulted in <a
 href="https://www.mozilla.org/en-US/security/advisories/mfsa2017-05/#CVE-2017-5400"
 target="_blank">CVE-2017-5400</a> and was fixed in Firefox 52.</p>
 
