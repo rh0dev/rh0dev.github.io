@@ -4,7 +4,7 @@
   <title><![CDATA[&#x03C1;]]></title>
   <link href="https://rh0dev.github.io//atom.xml" rel="self"/>
   <link href="https://rh0dev.github.io//"/>
-  <updated>2017-07-18T21:07:46+02:00</updated>
+  <updated>2017-07-18T21:16:01+02:00</updated>
   <id>https://rh0dev.github.io//</id>
   <author>
     <name><![CDATA[Rh0]]></name>
@@ -1079,7 +1079,7 @@ any import/export tables (line <a href="https://github.com/rh0dev/expdev/blob/ma
 <li>We then put shellcode into an arraybuffer and leak its address dynamically
 (<a href="https://github.com/rh0dev/expdev/blob/master/x360playerActiveXDataBof/x360_VideoPlayerActiveX_DataBof_full-DEP_ASLR_Bypass.html#L210" target="_blank">#210 - #215</a>).</li>
 <li>In line <a href="https://github.com/rh0dev/expdev/blob/master/x360playerActiveXDataBof/x360_VideoPlayerActiveX_DataBof_full-DEP_ASLR_Bypass.html#L231" target="_blank">#231 to #249</a> we build a <a href="http://en.wikipedia.org/wiki/Return-oriented_programming" target="_blank">ROP</a>
-chain and fill necessary fields of it. We leak it&rsquo;s buffer address as well. At
+chain and fill necessary fields of it. We leak its buffer address as well. At
 runtime the ROP chain will allocate executable memory, copy the shellcode to it
 and will jump to it. The chain solely uses gadgets from the VideoPlayer.ocx
 module.</li>
