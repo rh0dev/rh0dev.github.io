@@ -4,7 +4,7 @@
   <title><![CDATA[&#x03C1;]]></title>
   <link href="https://rh0dev.github.io//atom.xml" rel="self"/>
   <link href="https://rh0dev.github.io//"/>
-  <updated>2017-07-18T21:16:01+02:00</updated>
+  <updated>2017-07-24T16:06:27+02:00</updated>
   <id>https://rh0dev.github.io//</id>
   <author>
     <name><![CDATA[Rh0]]></name>
@@ -22,7 +22,7 @@
     <id>https://rh0dev.github.io//blog/2017/the-return-of-the-jit-part-2</id>
     
     <content type="html"><![CDATA[<p>In <a href="http://rh0dev.github.io/blog/2017/the-return-of-the-jit/">part 1</a>
-I disclosed details about ASM.JS JIT-Spray in Mozilla Firefox <51 (<a href="https://www.mozilla.org/en-US/security/advisories/mfsa2017-01/#CVE-2017-5375" target="_blank">CVE-2017-5375</a>).
+I disclosed details about ASM.JS JIT-Spray in Mozilla Firefox <51 (32-bit) on Windows (<a href="https://www.mozilla.org/en-US/security/advisories/mfsa2017-01/#CVE-2017-5375" target="_blank">CVE-2017-5375</a>).
 Before going into details of the patch and its bypass resulting in <a
 href="https://www.mozilla.org/en-US/security/advisories/mfsa2017-05/#CVE-2017-5400"
 target="_blank">CVE-2017-5400</a>, here are two more (maybe known) methods of hiding x86
@@ -320,7 +320,7 @@ Rh0</p>
     <updated>2017-07-13T17:54:28+02:00</updated>
     <id>https://rh0dev.github.io//blog/2017/the-return-of-the-jit</id>
     
-    <content type="html"><![CDATA[<p>TL;DR: This is the story about <em>ASM.JS</em> JIT-Spray in Mozilla Firefox (x86) on Windows tracked as
+    <content type="html"><![CDATA[<p>TL;DR: This is the story about <em>ASM.JS</em> JIT-Spray in Mozilla Firefox (x86 32-bit) on Windows tracked as
 <a href="https://www.mozilla.org/en-US/security/advisories/mfsa2017-01/#CVE-2017-5375" target="_blank">CVE-2017-5375</a> and <a href="https://www.mozilla.org/en-US/security/advisories/mfsa2017-05/#CVE-2017-5400" target="_blank">CVE-2017-5400</a>. It allows to fully bypass DEP and ASLR.</p>
 
 <p>I always liked the idea of JIT-Spray since the first time I saw it being used for
