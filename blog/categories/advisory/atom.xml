@@ -4,7 +4,7 @@
   <title><![CDATA[Category: advisory | &#x03C1;]]></title>
   <link href="https://rh0dev.github.io//blog/categories/advisory/atom.xml" rel="self"/>
   <link href="https://rh0dev.github.io//"/>
-  <updated>2017-07-24T16:06:27+02:00</updated>
+  <updated>2017-07-26T00:21:29+02:00</updated>
   <id>https://rh0dev.github.io//</id>
   <author>
     <name><![CDATA[Rh0]]></name>
@@ -20,7 +20,7 @@
     <id>https://rh0dev.github.io//blog/2017/the-return-of-the-jit-part-2</id>
     <content type="html"><![CDATA[<p></p>
 
-<p>In <a href="http://rh0dev.github.io/blog/2017/the-return-of-the-jit/">part 1</a>
+<p>In <a href="https://rh0dev.github.io/blog/2017/the-return-of-the-jit/">part 1</a>
 I disclosed details about ASM.JS JIT-Spray in Mozilla Firefox <51 (32-bit) on Windows (<a href="https://www.mozilla.org/en-US/security/advisories/mfsa2017-01/#CVE-2017-5375" target="_blank">CVE-2017-5375</a>).
 Before going into details of the patch and its bypass resulting in <a
 href="https://www.mozilla.org/en-US/security/advisories/mfsa2017-05/#CVE-2017-5400"
@@ -35,9 +35,9 @@ code in ASM.JS constants in Firefox.</p>
 <h2>Hide Instructions without Constant Folding</h2>
 
 <p>TL;DR: A simple <a href="https://github.com/rh0dev/expdev/blob/master/CVE-2017-5400_targeted_ASM.JS_JIT-Spray/Payload_PoC_Firefox_51.0.1.html" target="_blank">PoC</a> demonstrates combining three-byte
-payloads with two byte-payloads. If you want to skip this go to the <a href="#CVE-2017-5375_patch">patch for CVE-2017-5375</a> and its <a href="#CVE-2017-5375_bypass">bypass</a>.</p>
+payloads with two-byte payloads. If you want to skip this go to the <a href="#CVE-2017-5375_patch">patch for CVE-2017-5375</a> and its <a href="#CVE-2017-5375_bypass">bypass</a>.</p>
 
-<p>As mentioned in <a href="http://rh0dev.github.io/blog/2017/the-return-of-the-jit/">part 1</a>, we can hide x86 instructions within ASM.JS constant assignments such as
+<p>As mentioned in <a href="https://rh0dev.github.io/blog/2017/the-return-of-the-jit/">part 1</a>, we can hide x86 instructions within ASM.JS constant assignments such as
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
@@ -74,7 +74,7 @@ payloads with two byte-payloads. If you want to skip this go to the <a href="#CV
 </pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="nx">VAL</span> <span class="o">=</span> <span class="p">(</span><span class="nx">VAL</span> <span class="o">+</span> <span class="mh">0xA8909090</span><span class="p">)</span><span class="o">|</span><span class="mi">0</span><span class="p">;</span>
 </span><span class='line'><span class="nx">VAL</span> <span class="o">=</span> <span class="p">(</span><span class="nx">VAL</span> <span class="o">+</span> <span class="mh">0xA8909090</span><span class="p">)</span><span class="o">|</span><span class="mi">0</span><span class="p">;</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
 </span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">pre</span><span class="o">&gt;&lt;</span><span class="nx">code</span><span class="o">&gt;</span><span class="nx">However</span><span class="p">,</span> <span class="nx">constant</span> <span class="nx">folding</span> <span class="nx">would</span> <span class="nx">easily</span> <span class="k">break</span> <span class="nx">our</span> <span class="nx">hidden</span> <span class="nx">NOPs</span><span class="p">.</span> <span class="nx">If</span> <span class="nx">a</span> <span class="nx">compiler</span> <span class="nx">folds</span>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">pre</span><span class="o">&gt;&lt;</span><span class="nx">code</span><span class="o">&gt;</span><span class="nx">However</span><span class="p">,</span> <span class="nx">constant</span> <span class="nx">folding</span> <span class="nx">can</span> <span class="nx">easily</span> <span class="k">break</span> <span class="nx">our</span> <span class="nx">hidden</span> <span class="nx">NOPs</span><span class="p">.</span> <span class="nx">If</span> <span class="nx">a</span> <span class="nx">compiler</span> <span class="nx">folds</span>
 </span><span class='line'><span class="nx">the</span> <span class="nx">constants</span> <span class="nx">it</span> <span class="o">*</span><span class="nx">might</span><span class="o">*</span> <span class="nx">emit</span> <span class="nx">one</span> <span class="nx">instruction</span><span class="p">,</span> <span class="nx">assigning</span> <span class="nx">directly</span>  <span class="nx">the</span> <span class="nx">result</span> <span class="nx">of</span> <span class="nx">the</span>
 </span><span class='line'><span class="nx">addition</span> <span class="kd">with</span> <span class="o">**</span><span class="nx">MOV</span> <span class="nx">EAX</span><span class="p">,</span> <span class="mh">0x51212120</span><span class="o">**</span><span class="p">.</span> <span class="nx">Hence</span><span class="p">,</span> <span class="nx">our</span> <span class="nx">code</span> <span class="nx">would</span> <span class="nx">be</span> <span class="nx">gone</span><span class="p">.</span> <span class="nx">An</span> <span class="nx">easy</span> <span class="nx">way</span> <span class="nx">to</span>
 </span><span class='line'><span class="nx">prevent</span> <span class="k">this</span> <span class="nx">is</span> <span class="nx">to</span> <span class="nx">use</span> <span class="nx">the</span> <span class="o">*</span><span class="nx">foreign</span> <span class="kd">function</span> <span class="kr">interface</span> <span class="p">(</span><span class="nx">ffi</span><span class="p">)</span><span class="o">*</span> <span class="nx">of</span> <span class="nx">ASM</span><span class="p">.</span><span class="nx">JS</span><span class="p">.</span>
@@ -95,7 +95,7 @@ payloads with two byte-payloads. If you want to skip this go to the <a href="#CV
 </span><span class='line'>        <span class="o">&amp;</span><span class="nx">hellip</span><span class="p">;</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
 </span><span class='line'>
 </span><span class='line'><span class="o">&lt;</span><span class="nx">pre</span><span class="o">&gt;&lt;</span><span class="nx">code</span><span class="o">&gt;</span>
-</span><span class='line'><span class="nx">The</span> <span class="nx">resulting</span> <span class="nx">x86</span> <span class="nx">code</span> <span class="nx">prepares</span> <span class="nx">the</span> <span class="nx">five</span> <span class="nx">integer</span> <span class="nx">parameters</span> <span class="p">(</span><span class="o">**</span><span class="mh">0xa9909090</span><span class="o">**</span><span class="p">)</span> <span class="k">for</span> <span class="nx">the</span> <span class="kd">function</span> <span class="o">&amp;</span><span class="nx">lt</span><span class="p">;</span><span class="nx">span</span>
+</span><span class='line'><span class="nx">The</span> <span class="nx">corresponding</span> <span class="nx">x86</span> <span class="nx">code</span> <span class="nx">prepares</span> <span class="nx">the</span> <span class="nx">five</span> <span class="nx">integer</span> <span class="nx">parameters</span> <span class="p">(</span><span class="o">**</span><span class="mh">0xa9909090</span><span class="o">**</span><span class="p">)</span> <span class="k">for</span> <span class="nx">the</span> <span class="kd">function</span> <span class="o">&amp;</span><span class="nx">lt</span><span class="p">;</span><span class="nx">span</span>
 </span><span class='line'><span class="kr">class</span><span class="o">=</span><span class="s2">&quot;inlineCode&quot;</span><span class="o">&amp;</span><span class="nx">gt</span><span class="p">;</span><span class="nx">ffi_func</span><span class="p">()</span><span class="o">&amp;</span><span class="nx">lt</span><span class="p">;</span><span class="err">/span&amp;gt; before calling it:</span>
 </span><span class='line'><span class="o">&lt;</span><span class="err">/code&gt;&lt;/pre&gt;</span>
 </span><span class='line'>
@@ -106,9 +106,9 @@ payloads with two byte-payloads. If you want to skip this go to the <a href="#CV
 </span><span class='line'><span class="mi">5</span><span class="nx">e</span><span class="o">:</span> <span class="nx">c7442410909090a9</span> <span class="nx">mov</span>     <span class="nx">dword</span> <span class="nx">ptr</span> <span class="p">[</span><span class="nx">esp</span><span class="o">+</span><span class="mi">10</span><span class="nx">h</span><span class="p">],</span><span class="mi">0</span><span class="nx">A9909090h</span>
 </span></code></pre></td></tr></table></div></figure></p>
 
-<p>Again, if we jump into the middle of the third instruction at offset 52,
+<p>Again, if we jump into the middle of the third instruction at offset 0x52,
 we hit our injected code (NOP-sled):
-<code>plain Hidden NOPS within emitted x86 code
+<code>plain Hidden NOPs within emitted x86 code
 52: 90              nop
 53: 90              nop
 54: 90              nop
@@ -134,7 +134,7 @@ Hence, we can use the above trick to only hide 0x80/4 x 3 = 0x60 payload bytes.<
 
 <p>Nevertheless, we can use two bytes of an ASM.JS constant as payload bytes and the
 two other bytes as a <em>relative short jump (ebXX)</em> to the next two payload bytes. This allows us to go beyond 0x80/4 = 32 parameters and 0x60 payload bytes. For
-example, we use <strong>0x07eb9090</strong> as constants to hide two NOPS and a JMP:</p>
+example, we use <strong>0x07eb9090</strong> as constants to hide two NOPs and a JMP:</p>
 
 <p></p>
 
@@ -143,7 +143,7 @@ example, we use <strong>0x07eb9090</strong> as constants to hide two NOPS and a 
 16: c78424880000009090eb07   mov dword [esp + 0x88], 0x07eb9090
 </code></pre>
 
-<p>When we start executing from offset 7, our two NOPS and the subsequent JMP is hit to get the
+<p>When we start executing from offset 7, our two NOPs and the subsequent JMP is hit to get the
 injected code running:</p>
 
 <p>
@@ -174,7 +174,7 @@ shellcode to it, and jumps to it.</p>
 <p>Coming back to CVE-2017-5375.
 The patch mostly consists of two major changes.</p>
 
-<p>1) The addresses of code allocations were more <a href="https://hg.mozilla.org/releases/mozilla-release/diff/ab1fd5b320a4/js/src/jit/ExecutableAllocatorWin.cpp">randomized</a>:
+<p>1) The addresses of code allocations are <a href="https://hg.mozilla.org/releases/mozilla-release/diff/ab1fd5b320a4/js/src/jit/ExecutableAllocatorWin.cpp">randomized</a> stronger:
 <figure class='code'><figcaption><span>Diff of js/src/jit/ExecutableAllocatorWin.cpp (50.1.0 vs. 51)</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>

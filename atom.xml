@@ -4,7 +4,7 @@
   <title><![CDATA[&#x03C1;]]></title>
   <link href="https://rh0dev.github.io//atom.xml" rel="self"/>
   <link href="https://rh0dev.github.io//"/>
-  <updated>2017-07-24T16:06:27+02:00</updated>
+  <updated>2017-07-26T00:21:29+02:00</updated>
   <id>https://rh0dev.github.io//</id>
   <author>
     <name><![CDATA[Rh0]]></name>
@@ -21,7 +21,7 @@
     <updated>2017-07-17T16:21:10+02:00</updated>
     <id>https://rh0dev.github.io//blog/2017/the-return-of-the-jit-part-2</id>
     
-    <content type="html"><![CDATA[<p>In <a href="http://rh0dev.github.io/blog/2017/the-return-of-the-jit/">part 1</a>
+    <content type="html"><![CDATA[<p>In <a href="https://rh0dev.github.io/blog/2017/the-return-of-the-jit/">part 1</a>
 I disclosed details about ASM.JS JIT-Spray in Mozilla Firefox <51 (32-bit) on Windows (<a href="https://www.mozilla.org/en-US/security/advisories/mfsa2017-01/#CVE-2017-5375" target="_blank">CVE-2017-5375</a>).
 Before going into details of the patch and its bypass resulting in <a
 href="https://www.mozilla.org/en-US/security/advisories/mfsa2017-05/#CVE-2017-5400"
@@ -36,9 +36,9 @@ code in ASM.JS constants in Firefox.</p>
 <h2>Hide Instructions without Constant Folding</h2>
 
 <p>TL;DR: A simple <a href="https://github.com/rh0dev/expdev/blob/master/CVE-2017-5400_targeted_ASM.JS_JIT-Spray/Payload_PoC_Firefox_51.0.1.html" target="_blank">PoC</a> demonstrates combining three-byte
-payloads with two byte-payloads. If you want to skip this go to the <a href="#CVE-2017-5375_patch">patch for CVE-2017-5375</a> and its <a href="#CVE-2017-5375_bypass">bypass</a>.</p>
+payloads with two-byte payloads. If you want to skip this go to the <a href="#CVE-2017-5375_patch">patch for CVE-2017-5375</a> and its <a href="#CVE-2017-5375_bypass">bypass</a>.</p>
 
-<p>As mentioned in <a href="http://rh0dev.github.io/blog/2017/the-return-of-the-jit/">part 1</a>, we can hide x86 instructions within ASM.JS constant assignments such as</p>
+<p>As mentioned in <a href="https://rh0dev.github.io/blog/2017/the-return-of-the-jit/">part 1</a>, we can hide x86 instructions within ASM.JS constant assignments such as</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -47,7 +47,7 @@ payloads with two byte-payloads. If you want to skip this go to the <a href="#CV
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>However, constant folding would easily break our hidden NOPs. If a compiler folds
+<p>However, constant folding can easily break our hidden NOPs. If a compiler folds
 the constants it <em>might</em> emit one instruction, assigning directly  the result of the
 addition with <strong>MOV EAX, 0x51212120</strong>. Hence, our code would be gone. An easy way to
 prevent this is to use the <em>foreign function interface (ffi)</em> of ASM.JS.
@@ -80,7 +80,7 @@ Consider following module:</p>
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>The resulting x86 code prepares the five integer parameters (<strong>0xa9909090</strong>) for the function <span
+<p>The corresponding x86 code prepares the five integer parameters (<strong>0xa9909090</strong>) for the function <span
 class="inlineCode">ffi_func()</span> before calling it:</p>
 
 <figure class='code'><figcaption><span>Native x86 code generated from ASM.JS using parameters for ffi</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
@@ -95,10 +95,10 @@ class="inlineCode">ffi_func()</span> before calling it:</p>
 </span><span class='line'>5e: c7442410909090a9 mov     dword ptr [esp+10h],0A9909090h</span></code></pre></td></tr></table></div></figure>
 
 
-<p>Again, if we jump into the middle of the third instruction at offset 52,
+<p>Again, if we jump into the middle of the third instruction at offset 0x52,
 we hit our injected code (NOP-sled):</p>
 
-<figure class='code'><figcaption><span>Hidden NOPS within emitted x86 code</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span>Hidden NOPs within emitted x86 code</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -132,7 +132,7 @@ Hence, we can use the above trick to only hide 0x80/4 x 3 = 0x60 payload bytes.<
 
 <p>Nevertheless, we can use two bytes of an ASM.JS constant as payload bytes and the
 two other bytes as a <em>relative short jump (ebXX)</em> to the next two payload bytes. This allows us to go beyond 0x80/4 = 32 parameters and 0x60 payload bytes. For
-example, we use <strong>0x07eb9090</strong> as constants to hide two NOPS and a JMP:</p>
+example, we use <strong>0x07eb9090</strong> as constants to hide two NOPs and a JMP:</p>
 
 <figure class='code'><figcaption><span>Constants containing two payload bytes </span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -142,7 +142,7 @@ example, we use <strong>0x07eb9090</strong> as constants to hide two NOPS and a 
 </span><span class='line'>16: c78424880000009090eb07   mov dword [esp + 0x88], 0x07eb9090</span></code></pre></td></tr></table></div></figure>
 
 
-<p>When we start executing from offset 7, our two NOPS and the subsequent JMP is hit to get the
+<p>When we start executing from offset 7, our two NOPs and the subsequent JMP is hit to get the
 injected code running:</p>
 
 <figure class='code'><figcaption><span>Two payload bytes connected with short jumps</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
@@ -182,7 +182,7 @@ shellcode to it, and jumps to it.</p>
 <p>Coming back to CVE-2017-5375.
 The patch mostly consists of two major changes.</p>
 
-<p>1) The addresses of code allocations were more <a href="https://hg.mozilla.org/releases/mozilla-release/diff/ab1fd5b320a4/js/src/jit/ExecutableAllocatorWin.cpp">randomized</a>:</p>
+<p>1) The addresses of code allocations are <a href="https://hg.mozilla.org/releases/mozilla-release/diff/ab1fd5b320a4/js/src/jit/ExecutableAllocatorWin.cpp">randomized</a> stronger:</p>
 
 <figure class='code'><figcaption><span>Diff of js/src/jit/ExecutableAllocatorWin.cpp (50.1.0 vs. 51)</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
