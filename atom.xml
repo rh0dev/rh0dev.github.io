@@ -4,7 +4,7 @@
   <title><![CDATA[&#x03C1;]]></title>
   <link href="https://rh0dev.github.io//atom.xml" rel="self"/>
   <link href="https://rh0dev.github.io//"/>
-  <updated>2018-03-14T21:22:39+01:00</updated>
+  <updated>2018-03-14T22:24:32+01:00</updated>
   <id>https://rh0dev.github.io//</id>
   <author>
     <name><![CDATA[Rh0]]></name>
@@ -107,7 +107,7 @@ control when <span class="inlineCode"> node-&gt;release() </span> is called in <
 
 
 <p>The code is equivalent for <em>firefox-46.0.1/parser/html/nsHtml5TreeBuilder.cpp</em>.
-As <span class="inlineCode">group</span> is a constant on line 1096, we only need one attempt to reach line 1102.
+As <span class="inlineCode">group</span> is a constant on line 1096, we only need one exploit attempt to reach line 1102.
 This can be achieved when changing the last element from
 <span class="inlineCode">style</span> to <span class="inlineCode">dd</span>
 (see <a href="https://github.com/rh0dev/expdev/blob/master/CVE-2017-5375_ASM.JS_JIT-Spray/CVE-2016-1960_Firefox_44.0.2_float_pool_spray.html#L80" target="_blank">modification</a>).
