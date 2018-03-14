@@ -4,7 +4,7 @@
   <title><![CDATA[&#x03C1;]]></title>
   <link href="https://rh0dev.github.io//atom.xml" rel="self"/>
   <link href="https://rh0dev.github.io//"/>
-  <updated>2018-03-03T23:57:25+01:00</updated>
+  <updated>2018-03-14T20:47:16+01:00</updated>
   <id>https://rh0dev.github.io//</id>
   <author>
     <name><![CDATA[Rh0]]></name>
@@ -12,6 +12,117 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    
+    <title type="html"><![CDATA[More on ASM.JS Payloads and Exploitation]]></title>
+    <link href="https://rh0dev.github.io//blog/2018/more-on-asm-dot-js-payloads-and-exploitation/"/>
+    
+    <updated>2018-03-14T17:40:49+01:00</updated>
+    <id>https://rh0dev.github.io//blog/2018/more-on-asm-dot-js-payloads-and-exploitation</id>
+    
+    <content type="html"><![CDATA[<p>At <a href="https://www.offensivecon.org/" target="_blank">OffensiveCon 2018</a> I presented my already a bit dated ASM.JS JIT-Spray research.
+You can find more information in
+<a href="https://rh0dev.github.io/blog/2017/the-return-of-the-jit/" target="_blank">previous</a>
+<a href="https://rh0dev.github.io/blog/2017/the-return-of-the-jit-part-2/" target="_blank">blogposts</a>.</p>
+
+<p>Besides using arithmetic calculations and array elements, another interesting
+technique to spray payloads is to use float values. Using these values as
+payload bytes has the advantage that an attacker&rsquo;s shellcode resides continuous
+in memory at run time, because the float values are next to each other located
+in a constant pool. As the payload bytes are not interrupted by disturbing
+opcodes emitted by the ASM.JS compiler, all eight bytes of a double float constant
+are usable as payload.</p>
+
+<p>If you are into (over)hyping and naming vulnerabilities you can call it: <strong><em>ConstantDesaster</em></strong></p>
+
+<!-- more -->
+
+
+<p>So finally, I release the remaining code including our shellcode2asmjs
+<a href="https://github.com/rh0dev/shellcode2asmjs" target="_blank">(sc2asmjs.py)</a> tool
+and exploits for <a href="https://github.com/rh0dev/expdev/blob/master/CVE-2017-5375_ASM.JS_JIT-Spray/CVE-2016-1960_Firefox_46.0.1_float_pool_spray.html" target="_blank">CVE-2016-2819</a> and
+<a href="https://github.com/rh0dev/expdev/blob/master/CVE-2017-5375_ASM.JS_JIT-Spray/CVE-2016-2819_Firefox_44.0.2_float_pool_spray.html" target="_blank">CVE-2016-1960</a>. An
+exploit for <a href="https://github.com/rh0dev/expdev/blob/master/CVE-2017-5375_ASM.JS_JIT-Spray/CVE-2016-9079_Firefox_50.0.1_DEP_ASLR_Bypass.html" target="_blank">CVE-2016-9079</a> is already available for some time. Most likely,
+sc2asmjs.py won&rsquo;t be maintained anymore, however, you can still generate ASM.JS
+JIT-Spray payloads of different kinds and insert your favorite assembly or
+binary <a href="https://github.com/rapid7/metasploit-framework/wiki/How-to-use-msfvenom" target="_blank">Metasploit</a>
+payload to exploit vulnerable Mozilla Firefox versions.</p>
+
+<p>Some last words on CVE-2016-2819 and CVE-2016-1960: There is a very detailed <a
+href="https://www.exploit-db.com/exploits/42484/"
+target="_blank">public exploit</a> for CVE-2016-1960, which uses a bruteforce
+approach (see
+<a href="https://github.com/offensive-security/exploit-database/blob/master/exploits/windows/remote/42484.html#L969">explanation</a>).
+However, after a bit of diving into the vulnerable code and patches
+for <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1270381" target="_blank">both</a>
+<a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1246014" target="_blank">bugs</a>, it
+was possible to change the inital crashing testcase to reach an easier to
+exploit code path. The goal is to reach line 1102 where we get EIP
+control when <span class="inlineCode"> node-&gt;release() </span> called in <span class="inlineCode">nsHtml5TreeBuilder::pop()</span>:</p>
+
+<figure class='code'><figcaption><span>firefox-44.0.2/parser/html/nsHtml5TreeBuilder.cpp:602</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+</pre></td><td class='code'><pre><code class='C'><span class='line'><span class="mi">602</span>  <span class="kt">void</span>
+</span><span class='line'><span class="mi">603</span>  <span class="n">nsHtml5TreeBuilder</span><span class="o">::</span><span class="n">startTag</span><span class="p">(</span><span class="n">nsHtml5ElementName</span><span class="o">*</span> <span class="n">elementName</span><span class="p">,</span> <span class="n">nsHtml5HtmlAttributes</span><span class="o">*</span> <span class="n">attributes</span><span class="p">,</span> <span class="kt">bool</span> <span class="n">selfClosing</span><span class="p">)</span>
+</span><span class='line'><span class="mi">604</span>  <span class="p">{</span>
+</span><span class='line'><span class="p">....</span>
+</span><span class='line'><span class="mi">1092</span>     <span class="k">case</span> <span class="nl">NS_HTML5TREE_BUILDER_DD_OR_DT</span><span class="p">:</span> <span class="p">{</span>
+</span><span class='line'><span class="mi">1093</span>       <span class="n">eltPos</span> <span class="o">=</span> <span class="n">currentPtr</span><span class="p">;</span>
+</span><span class='line'><span class="mi">1094</span>       <span class="k">for</span> <span class="p">(;</span> <span class="p">;</span> <span class="p">)</span> <span class="p">{</span>
+</span><span class='line'><span class="mi">1095</span>         <span class="n">nsHtml5StackNode</span><span class="o">*</span> <span class="n">node</span> <span class="o">=</span> <span class="n">stack</span><span class="p">[</span><span class="n">eltPos</span><span class="p">];</span>
+</span><span class='line'><span class="mi">1096</span>         <span class="nf">if</span> <span class="p">(</span><span class="n">node</span><span class="o">-&gt;</span><span class="n">getGroup</span><span class="p">()</span> <span class="o">==</span> <span class="n">group</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'><span class="p">....</span>
+</span><span class='line'><span class="mi">1101</span>           <span class="k">while</span> <span class="p">(</span><span class="n">currentPtr</span> <span class="o">&gt;=</span> <span class="n">eltPos</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'><span class="mi">1102</span>             <span class="n">pop</span><span class="p">();</span>
+</span><span class='line'><span class="mi">1103</span>           <span class="p">}</span>
+</span><span class='line'><span class="mi">1104</span>           <span class="k">break</span><span class="p">;</span>
+</span><span class='line'><span class="p">....</span>
+</span><span class='line'><span class="mi">1107</span>         <span class="p">}</span>
+</span><span class='line'><span class="mi">1108</span>         <span class="n">eltPos</span><span class="o">--</span><span class="p">;</span>
+</span><span class='line'><span class="mi">1109</span>       <span class="p">}</span>
+</span><span class='line'><span class="p">....</span>
+</span><span class='line'><span class="mi">1113</span>       <span class="n">NS_HTML5_BREAK</span><span class="p">(</span><span class="n">starttagloop</span><span class="p">);</span>
+</span><span class='line'><span class="mi">1114</span>     <span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>The code is equivalent for <em>firefox-46.0.1/parser/html/nsHtml5TreeBuilder.cpp</em>.
+As <span class="inlineCode">group</span> is a constant on line 1096, we only need one attempt to reach line 1102.
+This can be achieved when changing the last element from
+<span class="inlineCode">style</span> to <span class="inlineCode">dd</span>
+(see <a href="https://github.com/rh0dev/expdev/blob/master/CVE-2017-5375_ASM.JS_JIT-Spray/CVE-2016-2819_Firefox_44.0.2_float_pool_spray.html#L79" target="_blank">modification</a>)
+And, as we only need EIP control when using ASM.JS
+JIT-Spray, exploitation becomes even more comfortable and easier.
+For more information take a look at the <a href="https://github.com/rh0dev/slides/blob/master/OffensiveCon2018_From_Assembly_to_JavaScript_and_back.pdf" target="_blank">OffensiveCon 2018 slides</a></p>
+
+<p>Enjoy! Let me know if you find any mistakes, feedback is welcome!</p>
+
+<p><br>
+Best,<br>
+Rh0</p>
+]]></content>
+    
+  </entry>
   
   <entry>
     

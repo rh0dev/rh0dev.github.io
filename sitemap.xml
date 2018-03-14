@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 <url>
+<loc>https://rh0dev.github.io//blog/2018/more-on-asm-dot-js-payloads-and-exploitation/</loc>
+<lastmod>2018-03-14T17:40:49+01:00</lastmod>
+</url>
+<url>
 <loc>https://rh0dev.github.io//blog/2017/the-return-of-the-jit-part-2/</loc>
 <lastmod>2017-07-17T16:21:10+02:00</lastmod>
 </url>
@@ -35,6 +39,9 @@
 </url>
 <url>
 <loc>https://rh0dev.github.io//blog/categories/advisory/</loc>
+</url>
+<url>
+<loc>https://rh0dev.github.io//blog/categories/tools/</loc>
 </url>
 <url>
 <loc>https://rh0dev.github.io//blog/index.html</loc>
