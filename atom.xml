@@ -4,7 +4,7 @@
   <title><![CDATA[&#x03C1;]]></title>
   <link href="https://rh0dev.github.io//atom.xml" rel="self"/>
   <link href="https://rh0dev.github.io//"/>
-  <updated>2018-03-14T21:05:58+01:00</updated>
+  <updated>2018-03-14T21:08:20+01:00</updated>
   <id>https://rh0dev.github.io//</id>
   <author>
     <name><![CDATA[Rh0]]></name>
@@ -41,7 +41,7 @@ are usable as payload.</p>
 
 <p>So finally, I release the remaining code including our shellcode2asmjs
 <a href="https://github.com/rh0dev/shellcode2asmjs" target="_blank">(sc2asmjs.py)</a> tool
-and exploits for <a href="https://github.com/rh0dev/expdev/blob/master/CVE-2017-5375_ASM.JS_JIT-Spray/CVE-2016-2918_Firefox_46.0.1_float_pool_spray.html" target="_blank">CVE-2016-2819</a> and
+and exploits for <a href="https://github.com/rh0dev/expdev/blob/master/CVE-2017-5375_ASM.JS_JIT-Spray/CVE-2016-2819_Firefox_46.0.1_float_pool_spray.html" target="_blank">CVE-2016-2819</a> and
 <a href="https://github.com/rh0dev/expdev/blob/master/CVE-2017-5375_ASM.JS_JIT-Spray/CVE-2016-1960_Firefox_44.0.2_float_pool_spray.html" target="_blank">CVE-2016-1960</a>. An
 exploit for <a href="https://github.com/rh0dev/expdev/blob/master/CVE-2017-5375_ASM.JS_JIT-Spray/CVE-2016-9079_Firefox_50.0.1_DEP_ASLR_Bypass.html" target="_blank">CVE-2016-9079</a> is already available for some time. Most likely,
 sc2asmjs.py won&rsquo;t be maintained anymore, however, you can still generate ASM.JS
