@@ -4,7 +4,7 @@
   <title><![CDATA[&#x03C1;]]></title>
   <link href="https://rh0dev.github.io//atom.xml" rel="self"/>
   <link href="https://rh0dev.github.io//"/>
-  <updated>2018-03-14T21:08:20+01:00</updated>
+  <updated>2018-03-14T21:16:07+01:00</updated>
   <id>https://rh0dev.github.io//</id>
   <author>
     <name><![CDATA[Rh0]]></name>
@@ -59,7 +59,7 @@ for <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1270381" target="_blan
 <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1246014" target="_blank">bugs</a>, it
 was possible to change the inital crashing testcase to reach an easier to
 exploit code path. The goal is to reach line 1102 where we get EIP
-control when <span class="inlineCode"> node-&gt;release() </span> called in <span class="inlineCode">nsHtml5TreeBuilder::pop()</span>:</p>
+control when <span class="inlineCode"> node-&gt;release() </span> is called in <span class="inlineCode">nsHtml5TreeBuilder::pop()</span>:</p>
 
 <figure class='code'><figcaption><span>firefox-44.0.2/parser/html/nsHtml5TreeBuilder.cpp:602</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
